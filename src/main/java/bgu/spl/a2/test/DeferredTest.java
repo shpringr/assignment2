@@ -1,4 +1,11 @@
+
+
 package bgu.spl.a2;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import org.junit.Assert;
+import org.junit.Test;
+
 
 /**
  * this class represents a deferred result i.e., an object that eventually will
@@ -17,6 +24,10 @@ package bgu.spl.a2;
 public class Deferred<T> {
 
 
+    public Deferred(){
+
+    }
+
     /**
      *
      * @return the resolved value if such exists (i.e., if this object has been
@@ -24,7 +35,8 @@ public class Deferred<T> {
      * @throws IllegalStateException in the case where this method is called and
      * this object is not yet resolved
      */
-    public T get() {
+
+    @Test public void T testGet() {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }
@@ -35,7 +47,7 @@ public class Deferred<T> {
      * @return true if this object has been resolved - i.e., if the method
      * {@link #resolve(java.lang.Object)} has been called on this object before.
      */
-    public boolean isResolved() {
+    @Test public void testIsResolved() {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }
@@ -52,7 +64,7 @@ public class Deferred<T> {
      * @throws IllegalStateException in the case where this object is already
      * resolved
      */
-    public void resolve(T value) {
+    @Test public void testResolve() {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }
@@ -70,7 +82,7 @@ public class Deferred<T> {
      * @param callback the callback to be called when the deferred object is
      * resolved
      */
-    public void whenResolved(Runnable callback) {
+    @Test public void testWhenResolved() {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }
