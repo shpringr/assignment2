@@ -1,8 +1,10 @@
-package bgu.spl.a2;
+package bgu.spl.a2.test;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.theories.suppliers.TestedOn;
 
 /**
  * Describes a monitor that supports the concept of versioning - its idea is
@@ -22,17 +24,17 @@ import org.junit.Test;
  */
 class VersionMonitorTest {
 
-    public int getVersion() {
+    @Test public int testGetVersion() {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }
 
-    public void inc() {
+    @Test public void testInc() {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }
 
-    public void await(int version) throws InterruptedException {
+    @Test public void testAwait() throws InterruptedException {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }

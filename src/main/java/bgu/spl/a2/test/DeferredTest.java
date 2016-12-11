@@ -1,8 +1,11 @@
 
 
-package bgu.spl.a2;
+package bgu.spl.a2.test;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import org.jetbrains.annotations.Contract;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,7 +39,8 @@ public class Deferred<T> {
      * this object is not yet resolved
      */
 
-    @Test public void T testGet() {
+    @Test public void T @Contract(" -> fail")
+    testGet() {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }
