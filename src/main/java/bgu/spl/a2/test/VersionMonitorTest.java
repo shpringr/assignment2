@@ -1,19 +1,21 @@
 package bgu.spl.a2.test;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-import org.junit.Assert;
+import bgu.spl.a2.VersionMonitor;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.suppliers.TestedOn;
+
+import static java.lang.System.out;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Describes a monitor that supports the concept of versioning - its idea is
  * simple, the monitor has a version number which you can receive via the method
- * {@link #getVersion()} once you have a version number, you can call
- * {@link #await(int)} with this version number in order to wait until this
+ * {@link #testGetVersion()} once you have a version number, you can call
+ * {@link #testAwait()} } with this version number in order to wait until this
  * version number changes.
  *
- * you can also increment the version number by one using the {@link #inc()}
+ * you can also increment the version number by one using the {@link #testInc()}
  * method.
  *
  * Note for implementors: you may add methods and synchronize any of the
@@ -24,12 +26,27 @@ import org.junit.experimental.theories.suppliers.TestedOn;
  */
 public class VersionMonitorTest {
 
-    @Test public int testGetVersion() {
+
+    public VersionMonitorTest(){
+
+    }
+
+
+
+    @Test public void testGetVersion() {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }
 
+    @Before
     @Test public void testInc() {
+        VersionMonitor v1 = new VersionMonitor();
+        assertNull("The object are Null" ,v1);
+        v1.inc();
+        assertEquals("Failure - version not increment", 1 , v1.getVersion() );
+
+
+
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }

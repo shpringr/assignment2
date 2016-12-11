@@ -3,6 +3,7 @@ package bgu.spl.a2.test;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import bgu.spl.a2.Deferred;
 import org.jetbrains.annotations.Contract;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,7 +23,7 @@ import org.junit.Test;
  *
  * @param <T> the result type
  */
-public class DeferredTest<T>  {
+public class DeferredTest<T> extends Deferred {
 
 
     public DeferredTest(){
