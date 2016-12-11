@@ -1,5 +1,3 @@
-
-
 package bgu.spl.a2.test;
 
 import java.util.function.Function;
@@ -24,10 +22,10 @@ import org.junit.Test;
  *
  * @param <T> the result type
  */
-public class Deferred<T> {
+public class DeferredTest<T>  {
 
 
-    public Deferred(){
+    public DeferredTest(){
 
     }
 
@@ -39,8 +37,7 @@ public class Deferred<T> {
      * this object is not yet resolved
      */
 
-    @Test public void T @Contract(" -> fail")
-    testGet() {
+    @Test public void testGet(){
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }

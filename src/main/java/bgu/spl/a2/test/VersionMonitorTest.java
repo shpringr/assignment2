@@ -22,7 +22,7 @@ import org.junit.experimental.theories.suppliers.TestedOn;
  * private, protected or package protected - in other words, no new public
  * methods
  */
-class VersionMonitorTest {
+public class VersionMonitorTest {
 
     @Test public int testGetVersion() {
         //TODO: replace method body with real implementation
