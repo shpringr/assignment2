@@ -20,7 +20,7 @@ import org.junit.Test;
  * private, protected or package protected - in other words, no new public
  * methods
  */
-public class VersionMonitor {
+class VersionMonitorTest {
 
     public int getVersion() {
         //TODO: replace method body with real implementation
