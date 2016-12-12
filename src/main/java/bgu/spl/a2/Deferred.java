@@ -1,5 +1,9 @@
 package bgu.spl.a2;
 
+import javax.security.auth.callback.Callback;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * this class represents a deferred result i.e., an object that eventually will
  * be resolved to hold a result of some operation, the class allows for getting
@@ -16,7 +20,8 @@ package bgu.spl.a2;
  */
 public class Deferred<T> {
 
-
+    private T value = null;
+    List<Runnable> callbacks = new ArrayList<>();
     /**
      *
      * @return the resolved value if such exists (i.e., if this object has been
@@ -24,9 +29,14 @@ public class Deferred<T> {
      * @throws IllegalStateException in the case where this method is called and
      * this object is not yet resolved
      */
-    public T get() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+    public T get() throws IllegalStateException
+    {
+        if (value == null)
+        {
+            throw new IllegalStateException();
+        }
+
+        return value;
     }
 
 
@@ -36,8 +46,8 @@ public class Deferred<T> {
      * {@link #resolve(java.lang.Object)} has been called on this object before.
      */
     public boolean isResolved() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+
+        return value!=null;
     }
 
     /**
