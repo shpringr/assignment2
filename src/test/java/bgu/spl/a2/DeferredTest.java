@@ -1,4 +1,4 @@
-package bgu.spl.a2.test;
+package java.bgu.spl.a2;
 
 import java.util.function.Function;
 import java.util.function.Predicate;

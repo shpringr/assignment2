@@ -18,14 +18,19 @@ package bgu.spl.a2;
  */
 public class VersionMonitor {
 
+    private int versionNumber;
+
+    public VersionMonitor()
+    {
+        versionNumber = 1;
+    }
+
     public int getVersion() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return versionNumber;
     }
 
     public void inc() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        versionNumber++;
     }
 
     public void await(int version) throws InterruptedException {
