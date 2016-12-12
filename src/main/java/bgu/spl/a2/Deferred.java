@@ -20,8 +20,16 @@ import java.util.List;
  */
 public class Deferred<T> {
 
-    private T value = null;
+    protected T value = null;
+
+
     List<Runnable> callbacks = new ArrayList<>();
+
+
+    protected List<Runnable> getCallbacks() {
+        return callbacks;
+    }
+
     /**
      *
      * @return the resolved value if such exists (i.e., if this object has been
@@ -83,6 +91,7 @@ public class Deferred<T> {
     public void whenResolved(Runnable callback) {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
+
     }
 
 }

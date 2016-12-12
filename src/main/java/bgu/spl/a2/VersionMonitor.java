@@ -20,8 +20,13 @@ public class VersionMonitor {
 
     private int versionNumber;
 
-    protected VersionMonitor() {
-        versionNumber = 1;
+    protected VersionMonitor()
+    {
+        versionNumber = 0;
+    }
+
+    protected void setVersionNumber(int versionNumber) {
+        this.versionNumber = versionNumber;
     }
 
     public int getVersion() {
