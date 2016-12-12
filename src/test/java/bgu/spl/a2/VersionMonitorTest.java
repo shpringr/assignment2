@@ -3,9 +3,13 @@ package bgu.spl.a2;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-class VersionMonitorTest {
+public class VersionMonitorTest {
 
-    VersionMonitor versionMonitor = new VersionMonitor();
+    VersionMonitor versionMonitor;
+
+    public VersionMonitorTest() {
+        versionMonitor =  new VersionMonitor();
+    }
 
     @Test
     public void testGetVersion() {
@@ -23,8 +27,8 @@ class VersionMonitorTest {
         assertEquals(currVersion + 2, versionMonitor.getVersion());
     }
 
-    @Test public void testAwait() throws InterruptedException {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
-    }
+//    @Test public void testAwait() throws InterruptedException {
+//        //TODO: replace method body with real implementation
+//        throw new UnsupportedOperationException("Not Implemented Yet.");
+//    }
 }

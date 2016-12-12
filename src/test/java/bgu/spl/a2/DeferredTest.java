@@ -2,8 +2,12 @@ package bgu.spl.a2;
 
 import org.junit.Test;
 
-public class DeferredTest<T> extends Deferred {
+public class DeferredTest extends Deferred {
 
+    public DeferredTest()
+    {
+
+    }
     @Test
     public void testGet(){
         //TODO: replace method body with real implementation
