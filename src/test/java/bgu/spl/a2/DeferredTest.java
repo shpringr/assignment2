@@ -1,5 +1,6 @@
 package bgu.spl.a2;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -133,4 +134,11 @@ public class DeferredTest extends Deferred {
         deferredStr.whenResolved(rn);
         assertFalse(deferredStr.getCallbacks().contains(rn));
     }
+
+
+    @After
+    public void tearDown(){
+
+    }
+
 }

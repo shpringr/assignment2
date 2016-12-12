@@ -1,5 +1,6 @@
 package bgu.spl.a2;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -48,5 +49,10 @@ public class VersionMonitorTest {
         versionMonitor.inc();
         versionMonitor.await(2);
         assertSame(versionMonitor.getVersion(), 2);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+
     }
 }
