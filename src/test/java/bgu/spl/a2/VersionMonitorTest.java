@@ -9,11 +9,6 @@ public class VersionMonitorTest {
 
     VersionMonitor versionMonitor;
 
-     public VersionMonitorTest()
-     {
-         versionMonitor =  new VersionMonitor();
-     }
-
     @Before
     public void setUp() {
         versionMonitor= new VersionMonitor();

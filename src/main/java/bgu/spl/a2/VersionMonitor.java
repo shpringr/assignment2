@@ -38,10 +38,7 @@ public class VersionMonitor {
     }
 
     public void await(int version) throws InterruptedException {
-        while (getVersion() != version)
-        {
-
-        }
-
+         //TODO: replace method body with real implementation
+        throw new UnsupportedOperationException("Not Implemented Yet.");
     }
 }
