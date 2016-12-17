@@ -3,6 +3,8 @@ package bgu.spl.a2;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static java.lang.Thread.sleep;
 import static org.junit.Assert.*;
 
 public class VersionMonitorTest {
@@ -32,22 +34,36 @@ public class VersionMonitorTest {
         assertEquals("version should be 2",currVersion + 2, versionMonitor.getVersion());
     }
 
-    @Test public void testAwait() throws InterruptedException {
+    @Test public void testAwait()
+    {
+        int begin =  versionMonitor.getVersion();
 
-        versionMonitor.await(2);
-        assertSame(versionMonitor.getVersion(), 2);
-    }
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run()  {
+                try {
+                    versionMonitor.await(begin);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
-    @Test public void testAwaitSameVersion() throws InterruptedException {
-
+        thread.start();
         versionMonitor.inc();
-        versionMonitor.inc();
-        versionMonitor.await(2);
-        assertSame(versionMonitor.getVersion(), 2);
+        try {
+            thread.join();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        assertNotSame(begin, versionMonitor.getVersion());
     }
 
     @After
     public void tearDown() throws Exception {
+        versionMonitor = null;
 
     }
 }
