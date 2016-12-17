@@ -13,14 +13,12 @@ public class DeferredTest extends Deferred {
 
     private Deferred<Integer> deferredInt;
     private Deferred<String> deferredStr;
-    private Deferred deferred;
     private Integer valueInt;
     private String valueStr;
     private Runnable rn;
 
     @Before
     public void setUp() {
-        deferred = new Deferred<>();
         deferredInt = new Deferred<Integer>();
         deferredStr = new Deferred<String>();
         valueInt = 0;
@@ -138,7 +136,11 @@ public class DeferredTest extends Deferred {
 
     @After
     public void tearDown(){
-
+        deferredInt = null;
+        deferredStr = null;
+        valueInt = null;
+        valueStr = null;
+        rn = null;
     }
 
 }
