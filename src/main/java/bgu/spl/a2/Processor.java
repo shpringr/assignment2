@@ -1,8 +1,5 @@
 package bgu.spl.a2;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 /**
  * this class represents a single work stealing processor, it is
  * {@link Runnable} so it is suitable to be executed by threads.
@@ -18,8 +15,6 @@ public class Processor implements Runnable {
 
     private final WorkStealingThreadPool pool;
     private final int id;
-    private Deque<Task> tasks;
-
     /**
      * constructor for this class
      *
@@ -39,44 +34,52 @@ public class Processor implements Runnable {
     /*package*/ Processor(int id, WorkStealingThreadPool pool) {
         this.id = id;
         this.pool = pool;
-        tasks = new ArrayDeque<>();
     }
 
     @Override
     public void run() {
        while (true)
        {
-           if (!tasks.isEmpty())
-           {
-               Task  t = tasks.pollFirst();
-               t.start();
-           }
-           else
-           {
-               stealTasks();
-           }
+//           if (!.isEmpty())
+//           {
+//               Task  t = tasks.pollFirst();
+//               t.start();
+//           }
+//           else
+//           {
+//               if (!stealTasks())
+//                   try {
+//                       pool.getVm().await(pool.getVm().getVersion() + 1);
+//                   } catch (InterruptedException e) {
+//                       e.printStackTrace();
+//                   }
+//
+//           }
        }
     }
 
-    private void stealTasks() {
+    private boolean stealTasks() {
+//
+//        int nextToSteal = (id+1) % pool.getProcessors().size();
+//        boolean isFound = false;
+//
+//        while (!isFound && nextToSteal != id)
+//        {
+//            Processor victim  = pool.getProcessors().get(nextToSteal);
+//
+//            if (!victim.tasks.isEmpty())
+//            {
+//                isFound = true;
+//                for (int i=0; i<victim.tasks.size()/2;i++)
+//                    this.tasks.addFirst(victim.tasks.pollLast());
+//            }
+//            else
+//            {
+//                nextToSteal = (nextToSteal+1) % pool.getProcessors().size();
+//            }
+//        }
+//
+//        return isFound;
 
-        int nextToSteal = (id+1) % pool.getProcessors().size();
-        boolean isFound = false;
-
-        while (!isFound && nextToSteal != id)
-        {
-            Processor victim  = pool.getProcessors().get(nextToSteal);
-
-            if (!victim.tasks.isEmpty())
-            {
-                isFound = true;
-                for (int i=0; i<victim.tasks.size()/2;i++)
-                    this.tasks.addFirst(victim.tasks.pollLast());
-            }
-            else
-            {
-                nextToSteal = (nextToSteal+1) % pool.getProcessors().size();
-            }
-        }
-    }
+ return false;   }
 }

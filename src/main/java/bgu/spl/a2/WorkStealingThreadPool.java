@@ -1,6 +1,10 @@
 package bgu.spl.a2;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * represents a work stealing thread pool - to understand what this class does
@@ -14,8 +18,14 @@ import java.util.List;
  */
 public class WorkStealingThreadPool {
 
-
     private List<Processor> processors;
+    private List<Deque<Task>> queues;
+
+    VersionMonitor getVm() {
+        return vm;
+    }
+
+    private VersionMonitor vm;
     /**
      * creates a {@link WorkStealingThreadPool} which has nthreads
      * {@link Processor}s. Note, threads should not get started until calling to
@@ -29,8 +39,15 @@ public class WorkStealingThreadPool {
      * thread pool
      */
     public WorkStealingThreadPool(int nthreads) {
-        for (int i=0; i< nthreads; i++)
+
+        processors = new ArrayList<>();
+        queues = new ArrayList<>();
+        vm = new VersionMonitor();
+
+        for (int i=0; i< nthreads; i++) {
             processors.add(i, new Processor(i, this));
+            queues.add(i, new ConcurrentLinkedDeque<>());
+        }
     }
 
     List<Processor> getProcessors() {
@@ -43,8 +60,10 @@ public class WorkStealingThreadPool {
      * @param task the task to execute
      */
     public void submit(Task<?> task) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+
+        //TODO: supposed to be random??
+//        processors.get(0).addTask(task);
+//        vm.inc();
     }
 
     /**
@@ -59,9 +78,8 @@ public class WorkStealingThreadPool {
      * @throws UnsupportedOperationException if the thread that attempts to
      * shutdown the queue is itself a processor of this queue
      */
-    public void shutdown() throws InterruptedException {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+    public void shutdown() throws InterruptedException , UnsupportedOperationException{
+
     }
 
     /**

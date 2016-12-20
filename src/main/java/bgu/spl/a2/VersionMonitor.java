@@ -29,11 +29,12 @@ public class VersionMonitor {
         return versionNumber;
     }
 
-    public void inc() {
+    public synchronized void inc() {
         versionNumber++;
+        notifyAll();
     }
 
-    public void await(int version) throws InterruptedException {
+    public synchronized void await(int version) throws InterruptedException {
          //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }
