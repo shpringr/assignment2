@@ -20,13 +20,10 @@ import java.util.List;
  */
 public class Deferred<T> {
 
-    protected T value = null;
+    private T value = null;
+    private List<Runnable> callbacks = new ArrayList<>();
 
-
-    List<Runnable> callbacks = new ArrayList<>();
-
-
-    protected List<Runnable> getCallbacks() {
+    List<Runnable> getCallbacks() {
         return callbacks;
     }
 

@@ -21,8 +21,9 @@ public class VersionMonitorTest {
 
         int currVersion = versionMonitor.getVersion();
         versionMonitor.inc();
-        assertNotSame("get version is not true",currVersion, versionMonitor.getVersion());
-        versionMonitor.setVersionNumber(3);
+        assertNotSame("get version should be different",currVersion, versionMonitor.getVersion());
+        versionMonitor.inc();
+        versionMonitor.inc();
         assertSame("the get version should be 3",3,versionMonitor.getVersion());
     }
 

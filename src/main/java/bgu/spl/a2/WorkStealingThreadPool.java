@@ -1,5 +1,7 @@
 package bgu.spl.a2;
 
+import java.util.List;
+
 /**
  * represents a work stealing thread pool - to understand what this class does
  * please refer to your assignment.
@@ -12,6 +14,8 @@ package bgu.spl.a2;
  */
 public class WorkStealingThreadPool {
 
+
+    private List<Processor> processors;
     /**
      * creates a {@link WorkStealingThreadPool} which has nthreads
      * {@link Processor}s. Note, threads should not get started until calling to
@@ -25,8 +29,12 @@ public class WorkStealingThreadPool {
      * thread pool
      */
     public WorkStealingThreadPool(int nthreads) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        for (int i=0; i< nthreads; i++)
+            processors.add(i, new Processor(i, this));
+    }
+
+    List<Processor> getProcessors() {
+        return processors;
     }
 
     /**

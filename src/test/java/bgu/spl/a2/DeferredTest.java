@@ -37,14 +37,16 @@ public class DeferredTest extends Deferred {
     }
 
     @Test()
-    public void testGet(){
+    public void testGet()
+    {
+
         //test DeferredInt
         deferredInt.resolve(valueInt);
-        assertEquals ("value are not the same", value , deferredInt.get());
+        assertEquals ("value are not the same", valueInt , deferredInt.get());
 
         //test DeferredString
         deferredStr.resolve(valueStr);
-        assertEquals ("value are not the same", value , deferredStr.get());
+        assertEquals ("value are not the same", valueStr , deferredStr.get());
 
     }
 
