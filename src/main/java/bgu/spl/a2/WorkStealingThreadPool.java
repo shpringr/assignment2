@@ -1,10 +1,8 @@
 package bgu.spl.a2;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * represents a work stealing thread pool - to understand what this class does
@@ -19,13 +17,15 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class WorkStealingThreadPool {
 
     private List<Processor> processors;
-    private List<Deque<Task>> queues;
+
+
+    private Map<Processor, Deque<Task>> processorToQueues;
+    private VersionMonitor vm;
 
     VersionMonitor getVm() {
         return vm;
     }
 
-    private VersionMonitor vm;
     /**
      * creates a {@link WorkStealingThreadPool} which has nthreads
      * {@link Processor}s. Note, threads should not get started until calling to
@@ -41,17 +41,19 @@ public class WorkStealingThreadPool {
     public WorkStealingThreadPool(int nthreads) {
 
         processors = new ArrayList<>();
-        queues = new ArrayList<>();
+        processorToQueues = new HashMap<>();
         vm = new VersionMonitor();
 
         for (int i=0; i< nthreads; i++) {
-            processors.add(i, new Processor(i, this));
-            queues.add(i, new ConcurrentLinkedDeque<>());
+            Processor currProcessor = new Processor(i, this);
+            processors.add(i, currProcessor);
+            processorToQueues.put(currProcessor, new ConcurrentLinkedDeque<>());
         }
     }
 
-    List<Processor> getProcessors() {
-        return processors;
+
+    Deque<Task> getQueue(Processor processor) {
+        return processorToQueues.get(processor);
     }
 
     /**
@@ -60,10 +62,10 @@ public class WorkStealingThreadPool {
      * @param task the task to execute
      */
     public void submit(Task<?> task) {
+        int randomProcessor = ThreadLocalRandom.current().nextInt(0,processors.size());
 
-        //TODO: supposed to be random??
-//        processors.get(0).addTask(task);
-//        vm.inc();
+        processorToQueues.get(randomProcessor).addFirst(task);
+        vm.inc();
     }
 
     /**
@@ -79,6 +81,10 @@ public class WorkStealingThreadPool {
      * shutdown the queue is itself a processor of this queue
      */
     public void shutdown() throws InterruptedException , UnsupportedOperationException{
+        for (Processor p : processors)
+        {
+            p.interrupt();
+        }
 
     }
 
@@ -86,8 +92,10 @@ public class WorkStealingThreadPool {
      * start the threads belongs to this thread pool
      */
     public void start() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        for (Processor p : processors)
+        {
+            p.run();
+        }
     }
 
 }

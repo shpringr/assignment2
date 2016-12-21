@@ -1,5 +1,7 @@
 package bgu.spl.a2;
 
+import java.util.Deque;
+
 /**
  * this class represents a single work stealing processor, it is
  * {@link Runnable} so it is suitable to be executed by threads.
@@ -38,23 +40,26 @@ public class Processor implements Runnable {
 
     @Override
     public void run() {
-       while (true)
+        Deque<Task> tasks;
+        while (!Thread.interrupted())
        {
-//           if (!.isEmpty())
-//           {
-//               Task  t = tasks.pollFirst();
-//               t.start();
-//           }
-//           else
-//           {
-//               if (!stealTasks())
-//                   try {
-//                       pool.getVm().await(pool.getVm().getVersion() + 1);
-//                   } catch (InterruptedException e) {
-//                       e.printStackTrace();
-//                   }
-//
-//           }
+           tasks = pool.getQueue(this);
+
+           if (!tasks.isEmpty())
+           {
+               Task  t = tasks.pollFirst();
+               t.start(); //should be sync
+           }
+           else
+           {
+               if (!stealTasks())
+                   try {
+                       pool.getVm().await(pool.getVm().getVersion());
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+
+           }
        }
     }
 
@@ -82,4 +87,8 @@ public class Processor implements Runnable {
 //        return isFound;
 
  return false;   }
+
+    void interrupt() {
+        Thread.currentThread().interrupt();
+    }
 }

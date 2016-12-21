@@ -25,7 +25,7 @@ public class VersionMonitor {
         versionNumber = 0;
     }
 
-    public int getVersion() {
+    public synchronized int getVersion() {
         return versionNumber;
     }
 
@@ -35,7 +35,7 @@ public class VersionMonitor {
     }
 
     public synchronized void await(int version) throws InterruptedException {
-         //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        while (this.getVersion() == version)
+            this.wait();
     }
 }
