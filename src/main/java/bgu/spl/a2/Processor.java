@@ -34,7 +34,7 @@ public class Processor implements Runnable {
      *             id inside its thread pool)
      * @param pool - the thread pool which owns this processor
      */
-    /*package*/ Processor(int id, WorkStealingThreadPool pool) {
+    /*package*/Processor(int id, WorkStealingThreadPool pool) {
         this.id = id;
         this.pool = pool;
     }

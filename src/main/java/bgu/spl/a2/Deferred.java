@@ -21,10 +21,11 @@ import java.util.List;
 public class Deferred<T> {
 
     private T value = null;
-    private List<Runnable> callbacks = new ArrayList<>();
+    private List<Runnable> callbacksList = new ArrayList<>();
+    boolean isResolve= false;
 
-    List<Runnable> getCallbacks() {
-        return callbacks;
+    protected List<Runnable> getCallbacks() {
+        return callbacksList;
     }
 
     /**
@@ -38,12 +39,10 @@ public class Deferred<T> {
     {
         if (value == null)
         {
-            throw new IllegalStateException();
+            throw new IllegalStateException("this method is called and this object is not yet resolved");
         }
-
         return value;
     }
-
 
     /**
      *
@@ -51,8 +50,7 @@ public class Deferred<T> {
      * {@link #resolve(java.lang.Object)} has been called on this object before.
      */
     public boolean isResolved() {
-
-        return value!=null;
+        return isResolve;
     }
 
     /**
@@ -68,8 +66,16 @@ public class Deferred<T> {
      * resolved
      */
     public void resolve(T value) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        if (callbacksList.size()==0 || isResolve) { //???should be just isResolve or..?
+            throw new IllegalStateException(" this object is already resolved");
+        }
+        else{
+            this.value = value;
+            isResolve = true;
+            for (Runnable callback : callbacksList){
+                callback.run();
+            }
+        }
     }
 
     /**
@@ -86,9 +92,13 @@ public class Deferred<T> {
      * resolved
      */
     public void whenResolved(Runnable callback) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
-
+        if (isResolve){
+            callback.run();
+        }
+        else {
+            if (!callbacksList.contains(callback)) {
+                boolean add = callbacksList.add(callback);
+            }
+        }
     }
-
 }
