@@ -65,13 +65,15 @@ public class Processor implements Runnable {
         int nextToSteal = (id + 1) % pool.getProcessors().size();
         boolean isFound = false;
 
-        while (!isFound && nextToSteal != id) {
-            Processor victim = pool.getProcessors().get(nextToSteal);
+        while (!isFound && nextToSteal != id)
+        {
             ConcurrentLinkedDeque<Task> victimQueue = pool.getQueue(nextToSteal);
 
+            // TODO: check how to steal in parallel with other processor
             if (!victimQueue.isEmpty()) {
                 isFound = true;
-                for (int i = 0; i < victimQueue.size() / 2; i++)
+                int size = victimQueue.size();
+                for (int i = 0; i < size / 2 && victimQueue.size() > 0; i++)
                     victimQueue.addFirst(victimQueue.pollLast());
             } else {
                 nextToSteal = (nextToSteal + 1) % pool.getProcessors().size();
