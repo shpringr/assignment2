@@ -17,13 +17,15 @@ import java.util.concurrent.ThreadLocalRandom;
 public class WorkStealingThreadPool {
 
     private List<Processor> processors;
-
-
-    private Map<Processor, Deque<Task>> processorToQueues;
+    private List<Thread> threads;
+    private List<ConcurrentLinkedDeque<Task>> queues;
     private VersionMonitor vm;
 
     VersionMonitor getVm() {
         return vm;
+    }
+    ConcurrentLinkedDeque<Task> getQueue(int id) {
+        return queues.get(id);
     }
 
     /**
@@ -41,21 +43,16 @@ public class WorkStealingThreadPool {
     public WorkStealingThreadPool(int nthreads) {
 
         processors = new ArrayList<>();
-        processorToQueues = new HashMap<>();
+        queues= new ArrayList<>();
         vm = new VersionMonitor();
 
         for (int i=0; i< nthreads; i++) {
             Processor currProcessor = new Processor(i, this);
             processors.add(i, currProcessor);
-            processorToQueues.put(currProcessor, new ConcurrentLinkedDeque<>());
+            queues.add(i, new ConcurrentLinkedDeque<>());
+            threads.add(i, new Thread(currProcessor));
         }
     }
-
-
-    Deque<Task> getQueue(Processor processor) {
-        return processorToQueues.get(processor);
-    }
-
     /**
      * submits a task to be executed by a processor belongs to this thread pool
      *
@@ -64,7 +61,7 @@ public class WorkStealingThreadPool {
     public void submit(Task<?> task) {
         int randomProcessor = ThreadLocalRandom.current().nextInt(0,processors.size());
 
-        processorToQueues.get(randomProcessor).addFirst(task);
+        queues.get(randomProcessor).addFirst(task);
         vm.inc();
     }
 
@@ -81,21 +78,23 @@ public class WorkStealingThreadPool {
      * shutdown the queue is itself a processor of this queue
      */
     public void shutdown() throws InterruptedException , UnsupportedOperationException{
-        for (Processor p : processors)
+        for (Thread thread : threads)
         {
-            p.interrupt();
+            thread.interrupt();
         }
-
     }
 
     /**
      * start the threads belongs to this thread pool
      */
     public void start() {
-        for (Processor p : processors)
+        for (Thread thread : threads)
         {
-            p.run();
+            thread.start();
         }
     }
 
+    List<Processor> getProcessors() {
+        return processors;
+    }
 }
