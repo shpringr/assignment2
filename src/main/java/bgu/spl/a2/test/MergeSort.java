@@ -21,8 +21,13 @@ public class MergeSort extends Task<int[]> {
 
     @Override
     protected void start() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        System.out.println("start..");
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+        }
+        System.out.println("completed");
+        complete(new int[]{1,1});
     }
 
     public static void main(String[] args) throws InterruptedException {

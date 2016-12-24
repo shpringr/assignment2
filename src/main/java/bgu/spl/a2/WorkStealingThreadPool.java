@@ -44,6 +44,7 @@ public class WorkStealingThreadPool {
 
         processors = new ArrayList<>();
         queues= new ArrayList<>();
+        threads = new ArrayList<>();
         vm = new VersionMonitor();
 
         for (int i=0; i< nthreads; i++) {
