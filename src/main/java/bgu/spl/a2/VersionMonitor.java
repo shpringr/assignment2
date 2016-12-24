@@ -35,7 +35,7 @@ public class VersionMonitor {
     }
 
     public synchronized void await(int version) throws InterruptedException {
-        while (this.getVersion() == version)
-            this.wait();
+        while (this.getVersion() == version){
+            this.wait();}
     }
 }

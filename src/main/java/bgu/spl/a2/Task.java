@@ -15,8 +15,9 @@ import java.util.Collection;
  */
 public abstract class Task<R> {
 
-    private Deferred deferred;
+    private Deferred<R> deferred;
     private Processor currProcessor;
+    boolean started = false;
 
     /**
      * start handling the task - note that this method is protected, a handler
@@ -42,7 +43,14 @@ public abstract class Task<R> {
      * @param handler the handler that wants to handle the task
      */
     /*package*/ final void handle(Processor handler) {
-
+        currProcessor = handler;
+        if(!started){
+            started=true;
+            this.start();
+        }
+        else{
+            //continue;
+        }
     }
 
     /**
@@ -52,10 +60,9 @@ public abstract class Task<R> {
      * @param task the task to execute
      */
     protected final void spawn(Task<?>... task) {
-       /* for (Task task1: task) {
-            task1.deferred.whenResolved(task);
+       for (Task task1: task) {
+           currProcessor.addTaskToQueue(task1);
         }
-       */
     }
 
     /**
@@ -70,6 +77,10 @@ public abstract class Task<R> {
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
 
+        for(Task task: tasks){
+            deferred.whenResolved(callback);
+        }
+        complete(this.getResult().get());
     }
 
     /**
@@ -79,19 +90,13 @@ public abstract class Task<R> {
      * @param result - the task calculated result
      */
     protected final void complete(R result) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        deferred.resolve(result);
     }
 
     /**
      * @return this task deferred result
      */
     public final Deferred<R> getResult() {
-        try {
-            return (Deferred<R>) deferred.get();
-        }
-        catch(IllegalStateException e) {
-            return null;
-        }
+            return deferred;
     }
 }

@@ -18,6 +18,14 @@ public class Processor implements Runnable {
     private final WorkStealingThreadPool pool;
     private final int id;
 
+    protected WorkStealingThreadPool getPool() {
+        return pool;
+    }
+
+    protected int getId() {
+        return id;
+    }
+
     /**
      * constructor for this class
      * <p>
@@ -47,7 +55,7 @@ public class Processor implements Runnable {
 
             if (!tasks.isEmpty()) {
                 Task t = tasks.pollFirst();
-                t.start(); //should be sync
+                t.handle(this); //should be sync
             } else {
                 if (!stealTasks())
                     try {
