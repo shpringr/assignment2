@@ -83,4 +83,8 @@ public class Processor implements Runnable {
         return isFound;
     }
 
+    void addTaskToQueue(Task task){
+
+        pool.getQueue(id).addFirst(task);
+    }
 }
