@@ -80,10 +80,9 @@ public abstract class Task<R> {
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
         continueCallback = callback;
+        numberOfTaskToWait=tasks.size();
 
         for (Task task : tasks) {
-            numberOfTaskToWait++;
-
             task.getResult().whenResolved(() -> {
                 synchronized (lockNumOfTask) {
                     if (numberOfTaskToWait == 1) {
@@ -91,6 +90,7 @@ public abstract class Task<R> {
                     } else
                         numberOfTaskToWait--;
                 }
+
             });
         }
     }
