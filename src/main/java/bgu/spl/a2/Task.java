@@ -52,8 +52,7 @@ public abstract class Task<R> {
         if (!started) {
             started = true;
             this.start();
-        }
-        else
+        } else
             continueCallback.run();
     }
 
@@ -80,6 +79,8 @@ public abstract class Task<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
+        continueCallback = callback;
+        numberOfTaskToWait=tasks.size();
 
         for (Task task : tasks) {
             task.getResult().whenResolved(() -> {
@@ -89,11 +90,9 @@ public abstract class Task<R> {
                     } else
                         numberOfTaskToWait--;
                 }
-            });
-            numberOfTaskToWait++;
-        }
 
-        continueCallback = callback;
+            });
+        }
     }
 
     /**

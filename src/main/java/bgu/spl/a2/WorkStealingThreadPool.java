@@ -105,23 +105,23 @@ public class WorkStealingThreadPool {
 
     void printProcessorStates(String msg) {
 
-        synchronized (lockPrint) {
-
-            System.out.println(msg);
-            System.out.println("*******");
-            for (int i = 0; i < processors.size(); i++) {
-                if (threads.get(i).isAlive())
-                    System.out.println("Processor " + processors.get(i).getId() +  "[" + threads.get(i).getState().toString()
-                            + "] has " + queues.get(i).size() + " tasks");
-                if (!queues.get(i).isEmpty())
-                    for (Task task : queues.get(i)) {
-                        if (task.check instanceof int[])
-                            System.out.println("    " + Arrays.toString((int[]) task.check));
-                    }
-            }
-
-            System.out.println("*******");
-            System.out.println();
-        }
+//        synchronized (lockPrint) {
+//
+//            System.out.println(msg);
+//            System.out.println("*******");
+//            for (int i = 0; i < processors.size(); i++) {
+//                if (threads.get(i).isAlive())
+//                    System.out.println("Processor " + processors.get(i).getId() +  "[" + threads.get(i).getState().toString()
+//                            + "] has " + queues.get(i).size() + " tasks");
+//                if (!queues.get(i).isEmpty())
+//                    for (Task task : queues.get(i)) {
+//                        if (task.check instanceof int[])
+//                            System.out.println("    " + Arrays.toString((int[]) task.check));
+//                    }
+//            }
+//
+//            System.out.println("*******");
+//            System.out.println();
+//        }
     }
 }
