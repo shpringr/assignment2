@@ -98,7 +98,6 @@ public class Processor implements Runnable {
     void addTaskToQueue(Task task){
 
         pool.getQueue(id).addFirst(task);
-        task.handle(this);
         pool.getVm().inc();
         pool.printProcessorStates("spwan processor :" + id);
     }

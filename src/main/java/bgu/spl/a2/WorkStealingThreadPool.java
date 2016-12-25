@@ -111,8 +111,8 @@ public class WorkStealingThreadPool {
             System.out.println("*******");
             for (int i = 0; i < processors.size(); i++) {
                 if (threads.get(i).isAlive())
-                    System.out.println("Processor " + processors.get(i).getId() + " has " + queues.get(i).size() + " tasks");
-
+                    System.out.println("Processor " + processors.get(i).getId() +  "[" + threads.get(i).getState().toString()
+                            + "] has " + queues.get(i).size() + " tasks");
                 if (!queues.get(i).isEmpty())
                     for (Task task : queues.get(i)) {
                         if (task.check instanceof int[])

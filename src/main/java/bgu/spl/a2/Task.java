@@ -5,7 +5,7 @@ import java.util.Collection;
 /**
  * an abstract class that represents a task that may be executed using the
  * {@link WorkStealingThreadPool}
- *
+ * <p>
  * Note for implementors: you may add methods and synchronize any of the
  * existing methods in this class *BUT* you must be able to explain why the
  * synchronization is needed. In addition, the methods you add to this class can
@@ -20,7 +20,9 @@ public abstract class Task<R> {
     private Deferred<R> deferred = new Deferred<R>();
     private Processor currProcessor;
     private boolean started = false;
-    private Runnable continueCallback = null;
+    private int numberOfTaskToWait = 0;
+    private final Object lockNumOfTask = new Object();
+    private Runnable continueCallback;
 
     /**
      * start handling the task - note that this method is protected, a handler
@@ -31,29 +33,31 @@ public abstract class Task<R> {
 
 
     /**
-     *
      * start/continue handling the task
-     *
+     * <p>
      * this method should be called by a processor in order to start this task
      * or continue its execution in the case where it has been already started,
      * any sub-tasks / child-tasks of this task should be submitted to the queue
      * of the handler that handles it currently
-     *
+     * <p>
      * IMPORTANT: this method is package protected, i.e., only classes inside
      * the same package can access it - you should *not* change it to
      * public/private/protected
      *
      * @param handler the handler that wants to handle the task
      */
-    /*package*/ final void handle(Processor handler) {
-        currProcessor = handler;
-        if(!started){
-            started=true;
-            this.start();
+    /*package*/
+    final void handle(Processor handler) {
+        synchronized (lockNumOfTask) {
+            currProcessor = handler;
+            if (!started) {
+                started = true;
+                this.start();
+            } else if (numberOfTaskToWait == 1) {
+                continueCallback.run();
+            } else
+                numberOfTaskToWait--;
         }
-        else if (continueCallback!=null){
-            continueCallback.run();
-            }
     }
 
     /**
@@ -63,15 +67,15 @@ public abstract class Task<R> {
      * @param task the task to execute
      */
     protected final void spawn(Task<?>... task) {
-       for (Task task1: task) {
-           currProcessor.addTaskToQueue(task1);
+        for (Task task1 : task) {
+            currProcessor.addTaskToQueue(task1);
         }
     }
 
     /**
      * add a callback to be executed once *all* the given tasks results are
      * resolved
-     *
+     * <p>
      * Implementors note: make sure that the callback is running only once when
      * all the given tasks completed.
      *
@@ -79,21 +83,15 @@ public abstract class Task<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
-        boolean isAlive = true;
 
-        while(isAlive) {
-            for (Task task : tasks) {
-                if (!(task.deferred.isResolve)){
-                    isAlive=true;
-                    break;
-                }
-                else{
-                    isAlive=false;
-                }
-            }
+        for (Task task : tasks) {
+            task.getResult().whenResolved(() -> {
+                currProcessor.addTaskToQueue(this);
+            });
+            numberOfTaskToWait++;
         }
 
-        this.continueCallback = callback;
+        continueCallback = callback;
     }
 
     /**
@@ -109,7 +107,7 @@ public abstract class Task<R> {
     /**
      * @return this task deferred result
      */
-    protected final Deferred<R> getResult() {
-            return deferred;
+    public final Deferred<R> getResult() {
+        return deferred;
     }
 }
