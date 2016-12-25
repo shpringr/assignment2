@@ -6,8 +6,11 @@ import bgu.spl.a2.WorkStealingThreadPool;
 /**
  * Created by Orel Hazan on 20/12/2016.
  */
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class SumMatrix extends Task<int[]>{
 
@@ -17,6 +20,7 @@ public class SumMatrix extends Task<int[]>{
         public SumRow(int[][] array,int r) {
             this.array = array;
             this.r=r;
+            check = array[r];
         }
         protected void start(){
             int sum=0;
@@ -29,6 +33,7 @@ public class SumMatrix extends Task<int[]>{
     private int[][] array;
     public SumMatrix(int[][] array) {
         this.array = array;
+        check = array;
     }
     protected void start() {
         int sum = 0;
@@ -51,12 +56,21 @@ public class SumMatrix extends Task<int[]>{
     public static void main(String[] args)throws InterruptedException
     {
         WorkStealingThreadPool pool = new WorkStealingThreadPool(4);
-        int[][] array = new int[5][10];
+        int[][] array = new int[][]{{1,2,5,-2,0,9,0,0,9,0,0,9,0},{3,4,7,8,0,9,0,0,9,0,0,9,0},{4,6,8,9,0,9,0,0,9,0,0,9,0},{0,0,9,0,0,9,0,0,9,0,0,9,0}};
 // some stuff
+
+        CountDownLatch l = new CountDownLatch(1);
         SumMatrix myTask = new SumMatrix(array);
         pool.start();
         pool.submit(myTask);
 //some stuff
+        myTask.getResult().whenResolved(() -> {
+            l.countDown();
+            System.out.println(Arrays.toString(myTask.getResult().get()));
+        });
+
+        l.await();
         pool.shutdown(); //stopping all the threads
+
     }
 }

@@ -1,6 +1,6 @@
 package bgu.spl.a2;
 
-import java.util.Deque;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -17,14 +17,6 @@ public class Processor implements Runnable {
 
     private final WorkStealingThreadPool pool;
     private final int id;
-
-    protected WorkStealingThreadPool getPool() {
-        return pool;
-    }
-
-    protected int getId() {
-        return id;
-    }
 
     /**
      * constructor for this class
@@ -49,24 +41,29 @@ public class Processor implements Runnable {
 
     @Override
     public void run() {
-        ConcurrentLinkedDeque<Task> tasks;
-        while (!Thread.interrupted()) {
-            tasks = pool.getQueue(id);
 
-            if (!tasks.isEmpty()) {
-                Task t = tasks.pollFirst();
-                t.handle(this); //should be sync
-            } else {
-                if (!stealTasks())
-                    try {
+        try {
+            ConcurrentLinkedDeque<Task> tasks;
+            while (!Thread.interrupted()) {
+                tasks = pool.getQueue(id);
+
+                if (!tasks.isEmpty()) {
+                    Task t = tasks.pollFirst();
+                    pool.printProcessorStates("run after submit processor :" + id);
+                    t.handle(this);
+
+                } else {
+                    if (!stealTasks())
                         pool.getVm().await(pool.getVm().getVersion());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                }
 
             }
         }
+        catch (InterruptedException e){}
+
+        System.out.println("Processor " + id + " interrupted!!");
     }
+
 
     private boolean stealTasks() {
 
@@ -77,12 +74,19 @@ public class Processor implements Runnable {
         {
             ConcurrentLinkedDeque<Task> victimQueue = pool.getQueue(nextToSteal);
 
-            // TODO: check how to steal in parallel with other processor
             if (!victimQueue.isEmpty()) {
                 isFound = true;
                 int size = victimQueue.size();
                 for (int i = 0; i < size / 2 && victimQueue.size() > 0; i++)
-                    victimQueue.addFirst(victimQueue.pollLast());
+                {
+                    Task task = victimQueue.pollLast();
+                    pool.getQueue(id).addFirst(task);
+                    String msg = "Processor " + id + " stole from " + nextToSteal + " task " ;
+                       if (task.check instanceof int[])
+                                msg += Arrays.toString((int[]) task.check);
+
+                    pool.printProcessorStates(msg);
+                }
             } else {
                 nextToSteal = (nextToSteal + 1) % pool.getProcessors().size();
             }
@@ -94,5 +98,12 @@ public class Processor implements Runnable {
     void addTaskToQueue(Task task){
 
         pool.getQueue(id).addFirst(task);
+        task.handle(this);
+        pool.getVm().inc();
+        pool.printProcessorStates("spwan processor :" + id);
+    }
+
+    int getId() {
+        return id;
     }
 }

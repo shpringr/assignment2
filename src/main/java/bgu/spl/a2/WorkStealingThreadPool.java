@@ -20,6 +20,7 @@ public class WorkStealingThreadPool {
     private List<Thread> threads;
     private List<ConcurrentLinkedDeque<Task>> queues;
     private VersionMonitor vm;
+    private Object lockPrint = new Object();
 
     VersionMonitor getVm() {
         return vm;
@@ -63,6 +64,8 @@ public class WorkStealingThreadPool {
         int randomProcessor = ThreadLocalRandom.current().nextInt(0,processors.size());
 
         queues.get(randomProcessor).addFirst(task);
+
+        printProcessorStates("submit processor :" + randomProcessor);
         vm.inc();
     }
 
@@ -79,6 +82,7 @@ public class WorkStealingThreadPool {
      * shutdown the queue is itself a processor of this queue
      */
     public void shutdown() throws InterruptedException , UnsupportedOperationException{
+
         for (Thread thread : threads)
         {
             thread.interrupt();
@@ -97,5 +101,27 @@ public class WorkStealingThreadPool {
 
     List<Processor> getProcessors() {
         return processors;
+    }
+
+    void printProcessorStates(String msg) {
+
+        synchronized (lockPrint) {
+
+            System.out.println(msg);
+            System.out.println("*******");
+            for (int i = 0; i < processors.size(); i++) {
+                if (threads.get(i).isAlive())
+                    System.out.println("Processor " + processors.get(i).getId() + " has " + queues.get(i).size() + " tasks");
+
+                if (!queues.get(i).isEmpty())
+                    for (Task task : queues.get(i)) {
+                        if (task.check instanceof int[])
+                            System.out.println("    " + Arrays.toString((int[]) task.check));
+                    }
+            }
+
+            System.out.println("*******");
+            System.out.println();
+        }
     }
 }
