@@ -97,7 +97,7 @@ public class Deferred<T> {
         }
         else {
             if (!callbacksList.contains(callback)) {
-                boolean add = callbacksList.add(callback);
+                callbacksList.add(callback);
             }
         }
     }

@@ -17,7 +17,7 @@ public abstract class Task<R> {
 
     public Object check = new Object();
 
-    private Deferred<R> deferred;
+    private Deferred<R> deferred = new Deferred<R>();
     private Processor currProcessor;
     boolean started = false;
 
