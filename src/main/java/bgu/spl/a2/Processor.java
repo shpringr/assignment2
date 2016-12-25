@@ -74,7 +74,7 @@ public class Processor implements Runnable {
         {
             ConcurrentLinkedDeque<Task> victimQueue = pool.getQueue(nextToSteal);
 
-            if (!victimQueue.isEmpty()) {
+            if (victimQueue.size() > 1 ) {
                 isFound = true;
                 int size = victimQueue.size();
                 for (int i = 0; i < size / 2 && victimQueue.size() > 0; i++)
