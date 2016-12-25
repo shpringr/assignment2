@@ -110,6 +110,6 @@ public abstract class Task<R> {
      * @return this task deferred result
      */
     public final Deferred<R> getResult() {
-        return deferred;
+            return deferred;
     }
 }

@@ -6,6 +6,7 @@
 package bgu.spl.a2.sim;
 
 import bgu.spl.a2.WorkStealingThreadPool;
+import bgu.spl.a2.sim.tasks.ParseData;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -48,27 +49,17 @@ public class Simulator {
                     new FileReader(jasonFileLocation));
 
             //convert the json string back to object
-            DataObject obj = gson.fromJson(br, DataObject.class);
+            ParseData obj = gson.fromJson(br, ParseData.class);
+            WorkStealingThreadPool myWorkStealingThreadPool = new WorkStealingThreadPool(obj.getThreads());
 
-            System.out.println(obj);
+
+
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
-
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return 0;
     }
-
-    public class GsonExample {
-        public static void main(String[] args) {
-
-            Gson gson = new Gson();
-
-        }
-    }
-
 
 }

@@ -4,6 +4,10 @@ package bgu.spl.a2.sim.conf;
  * a class that represents a manufacturing plan.
  **/
 public class ManufactoringPlan {
+    String product;
+    String[] parts;
+    String[] tools;
+
     /**
      * ManufactoringPlan constructor
      *
@@ -12,31 +16,29 @@ public class ManufactoringPlan {
      * @param tools   - array of strings describing the plans tools names
      */
     public ManufactoringPlan(String product, String[] parts, String[] tools) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        this.product = product;
+        this.parts = parts;
+        this.tools = tools;
     }
 
     /**
      * @return array of strings describing the plans part names
      */
     public String[] getParts() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return parts;
     }
 
     /**
      * @return string containing product name
      */
     public String getProductName() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return product;
     }
 
     /**
      * @return array of strings describing the plans tools names
      */
     public String[] getTools() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return tools;
     }
 }
