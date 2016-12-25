@@ -66,7 +66,7 @@ public class Deferred<T> {
      * resolved
      */
     public void resolve(T value) {
-        if (callbacksList.size()==0 || isResolve) { //???should be just isResolve or..?
+        if (isResolve) {
             throw new IllegalStateException(" this object is already resolved");
         }
         else{

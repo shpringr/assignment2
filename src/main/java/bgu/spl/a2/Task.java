@@ -78,11 +78,20 @@ public abstract class Task<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
+    boolean isAlive = true;
 
-        for(Task task: tasks){
-            deferred.whenResolved(callback);
+        while(isAlive) {
+            for (Task task : tasks) {
+                if (!(task.deferred.isResolve)){
+                    isAlive=true;
+                    break;
+                }
+                else{
+                    isAlive=false;
+                }
+            }
         }
-        complete(this.getResult().get());
+        deferred.whenResolved(callback);
     }
 
     /**
