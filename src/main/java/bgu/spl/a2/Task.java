@@ -19,7 +19,8 @@ public abstract class Task<R> {
 
     private Deferred<R> deferred = new Deferred<R>();
     private Processor currProcessor;
-    boolean started = false;
+    private boolean started = false;
+    private Runnable continueCallback = null;
 
     /**
      * start handling the task - note that this method is protected, a handler
@@ -50,9 +51,9 @@ public abstract class Task<R> {
             started=true;
             this.start();
         }
-        else{
-            //continue;
-        }
+        else if (continueCallback!=null){
+            continueCallback.run();
+            }
     }
 
     /**
@@ -78,7 +79,7 @@ public abstract class Task<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
-    boolean isAlive = true;
+        boolean isAlive = true;
 
         while(isAlive) {
             for (Task task : tasks) {
@@ -91,7 +92,8 @@ public abstract class Task<R> {
                 }
             }
         }
-        deferred.whenResolved(callback);
+
+        this.continueCallback = callback;
     }
 
     /**
@@ -107,7 +109,7 @@ public abstract class Task<R> {
     /**
      * @return this task deferred result
      */
-    public final Deferred<R> getResult() {
+    protected final Deferred<R> getResult() {
             return deferred;
     }
 }
