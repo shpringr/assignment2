@@ -56,7 +56,8 @@ public class SumMatrix extends Task<int[]>{
     public static void main(String[] args)throws InterruptedException
     {
         WorkStealingThreadPool pool = new WorkStealingThreadPool(8);
-        int[][] array = new int[][]{{1,2,5,-2},{3,4,7,8},{4,6,8,9},{0,0,9,0}};
+        int[][] array = new int[][]{{1,2,5,-2},{3,4,7,8},{4,6,8,9},{0,0,9,0}
+                ,{4,6,8,9},{0,0,9,0},{4,6,8,9},{0,0,9,0},{4,6,8,9},{0,0,9,0},{4,6,8,9},{0,0,9,0},{4,6,8,9},{0,0,9,0},{4,6,8,9},{0,0,9,0}};
 // some stuff
 
         CountDownLatch l = new CountDownLatch(1);
