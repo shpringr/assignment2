@@ -48,16 +48,13 @@ public abstract class Task<R> {
      */
     /*package*/
     final void handle(Processor handler) {
-        synchronized (lockNumOfTask) {
-            currProcessor = handler;
-            if (!started) {
-                started = true;
-                this.start();
-            } else if (numberOfTaskToWait == 1) {
-                continueCallback.run();
-            } else
-                numberOfTaskToWait--;
+        currProcessor = handler;
+        if (!started) {
+            started = true;
+            this.start();
         }
+        else
+            continueCallback.run();
     }
 
     /**
@@ -86,7 +83,12 @@ public abstract class Task<R> {
 
         for (Task task : tasks) {
             task.getResult().whenResolved(() -> {
-                currProcessor.addTaskToQueue(this);
+                synchronized (lockNumOfTask) {
+                    if (numberOfTaskToWait == 1) {
+                        currProcessor.addTaskToQueue(this);
+                    } else
+                        numberOfTaskToWait--;
+                }
             });
             numberOfTaskToWait++;
         }
