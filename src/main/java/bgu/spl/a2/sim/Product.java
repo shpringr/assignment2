@@ -7,9 +7,9 @@ import java.util.List;
  */
 public class Product {
 
-    long startId;
-    String name;
-    List<Product> parts;
+    private long startId;
+    private String name;
+    private List<Product> parts;
 
     /**
      * Constructor
