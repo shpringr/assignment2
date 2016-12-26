@@ -147,10 +147,10 @@ public class Simulator {
 
 
             ConcurrentLinkedQueue<Product> simulationResult;
-  //          simulationResult = Simulator.start();
+            simulationResult = Simulator.start();
             FileOutputStream fout = new FileOutputStream("result.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
-    //        oos.writeObject(simulationResult);
+            oos.writeObject(simulationResult);
 
 
         } catch (IOException e) {

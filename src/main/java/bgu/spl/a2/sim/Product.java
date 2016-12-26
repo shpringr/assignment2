@@ -1,5 +1,6 @@
 package bgu.spl.a2.sim;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +23,7 @@ public class Product {
     public Product(long startId, String name) {
         this.startId = startId;
         this.name = name;
+        parts = new ArrayList<>();
     }
 
     /**
