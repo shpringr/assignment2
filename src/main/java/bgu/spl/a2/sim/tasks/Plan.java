@@ -11,10 +11,10 @@ public class Plan {
     private String product;
     @SerializedName("tools")
     @Expose
-    private List<String> tools = null;
+    private String[] tools = null;
     @SerializedName("parts")
     @Expose
-    private List<String> parts = null;
+    private String[] parts = null;
 
     public String getProduct() {
         return product;
@@ -24,19 +24,19 @@ public class Plan {
         this.product = product;
     }
 
-    public List<String> getTools() {
+    public String[] getTools() {
         return tools;
     }
 
-    public void setTools(List<String> tools) {
+    public void setTools(String[] tools) {
         this.tools = tools;
     }
 
-    public List<String> getParts() {
+    public String[] getParts() {
         return parts;
     }
 
-    public void setParts(List<String> parts) {
+    public void setParts(String[] parts) {
         this.parts = parts;
     }
 

@@ -12,6 +12,10 @@ public class Wave {
 
     private List<Order> orders = null;
 
+    public Wave(List<Order> orders) {
+        this.orders = orders;
+    }
+
     public List<Order> getOrders() {
         return orders;
     }

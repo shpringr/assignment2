@@ -6,6 +6,7 @@
 package bgu.spl.a2.sim;
 
 import bgu.spl.a2.WorkStealingThreadPool;
+import bgu.spl.a2.sim.conf.ManufactoringPlan;
 import bgu.spl.a2.sim.tasks.ManufacturingTask;
 import bgu.spl.a2.sim.tasks.ParseData;
 import bgu.spl.a2.sim.tasks.Wave;
@@ -17,6 +18,7 @@ import com.google.gson.Gson;
 import java.io.*;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -28,7 +30,7 @@ import java.util.concurrent.CountDownLatch;
 public class Simulator {
 
     private static WorkStealingThreadPool workStealingThreadPool;
-    private static List<Wave> waves;
+    private static List<Wave> waves = new ArrayList<>();
     private static Warehouse warehouse= new Warehouse();
 
     /**
@@ -101,6 +103,7 @@ public class Simulator {
         workStealingThreadPool = myWorkStealingThreadPool;
     }
 
+
     private static void addTool(String toolType, int qty){
         if (toolType.equals("gs-driver")){
             GcdScrewDriver tool = new GcdScrewDriver();
@@ -126,28 +129,31 @@ public class Simulator {
             //convert the json string back to object
             ParseData obj = gson.fromJson(br, ParseData.class);
             WorkStealingThreadPool workStealingThreadPoolTmp = new WorkStealingThreadPool(obj.getThreads());
-            attachWorkStealingThreadPool(workStealingThreadPoolTmp);
+            Simulator.attachWorkStealingThreadPool(workStealingThreadPoolTmp);
 
             //add tool to Warehouse
             for (int i = 0; i < obj.getTools().size() ; i++) {
                 addTool(obj.getTools().get(i).getTool(),obj.getTools().get(i).getQty() );
             }
-
+            ManufactoringPlan plan;
             for (int i = 0; i < obj.getPlans().size(); i++) {
-
+                String product = obj.getPlans().get(i).getProduct();
+                String[] parts= obj.getPlans().get(i).getParts();
+                String[] tools = obj.getPlans().get(i).getTools();
+                plan = new ManufactoringPlan(product,parts ,tools);
+                warehouse.addPlan(plan);
             }
 
+            Wave wave;
+            int size = obj.getWaves().size();
+            for (int i = 0; i < obj.getWaves().size(); i++) {
+               wave = new Wave(obj.getWaves().get(i));
+               waves.add(wave);
+            }
+
+            System.out.println(obj.toString());
 
 
-
-            //System.out.println(obj.toString());
-
-
-            WorkStealingThreadPool myWorkStealingThreadPool = new WorkStealingThreadPool(obj.getThreads());
-
-
-
-            Simulator.attachWorkStealingThreadPool(new WorkStealingThreadPool(4));
             ConcurrentLinkedQueue<Product> simulationResult;
   //          simulationResult = Simulator.start();
             FileOutputStream fout = new FileOutputStream("result.ser");
