@@ -7,7 +7,8 @@ import java.util.List;
  */
 public class Product {
 
-    private long startId;
+    private final long startId;
+    private long finalID;
     private String name;
     private List<Product> parts;
 
@@ -34,7 +35,7 @@ public class Product {
      * @return The product start ID as a long. start ID should never be changed.
      */
     public long getStartId() {
-        return  startId;
+        return startId;
     }
 
     /**
@@ -42,8 +43,7 @@ public class Product {
      * final ID is the ID the product received as the sum of all UseOn(){}
      */
     public long getFinalId() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return finalID;
     }
 
     /**
@@ -62,4 +62,7 @@ public class Product {
         parts.add(p);
     }
 
+    public void setFinalId(long finalId) {
+        this.finalID = finalId;
+    }
 }
