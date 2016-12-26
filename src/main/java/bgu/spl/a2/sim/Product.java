@@ -62,7 +62,11 @@ public class Product {
         parts.add(p);
     }
 
-    public void setFinalId(long finalId) {
+    public void assembly(long finalId) {
+        if (parts.isEmpty())
+        {
+
+        }
         this.finalID = finalId;
     }
 }

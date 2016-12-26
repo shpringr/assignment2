@@ -4,6 +4,11 @@ import bgu.spl.a2.sim.tools.Tool;
 import bgu.spl.a2.sim.conf.ManufactoringPlan;
 import bgu.spl.a2.Deferred;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A class representing the warehouse in your simulation
  * <p>
@@ -14,24 +19,55 @@ import bgu.spl.a2.Deferred;
  */
 public class Warehouse {
 
+    Map<Tool, Integer> toolsAndQuantities;
+    List<ManufactoringPlan> plans;
     /**
      * Constructor
      */
     public Warehouse() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        toolsAndQuantities = new HashMap<>();
+        plans = new ArrayList<>();
     }
 
     /**
      * Tool acquisition procedure
-     * Note that this procedure is non-blocking and should return immediatly
-     *
+     * Note that this procedure is non-blocking and should return immediately     *
      * @param type - string describing the required tool
      * @return a deferred promise for the  requested tool
      */
-    public Deferred<Tool> acquireTool(String type) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+    public Deferred<Tool> acquireTool(String type)
+    {
+        Deferred<Tool> toolDeferred = new Deferred<>();
+        for(Tool tool : toolsAndQuantities.keySet()) {
+                if (tool.getType().equals(type))
+                {
+                    reduceTool(tool);
+                    toolDeferred.resolve(tool);
+                }
+        }
+
+        if (!toolDeferred.isResolved())
+        {
+         toolDeferred.whenResolved(() -> {
+             acquireTool(type);
+         });
+        }
+
+        return toolDeferred;
+    }
+
+    private void reduceTool(Tool tool) {
+        if (toolsAndQuantities.get(tool).equals(0))
+            toolsAndQuantities.remove(tool);
+        else
+            toolsAndQuantities.put(tool, toolsAndQuantities.get(tool) - 1);
+    }
+
+    private void addTool(Tool tool) {
+        if (!toolsAndQuantities.keySet().contains(tool))
+            addTool(tool, 1);
+        else
+            addTool(tool,toolsAndQuantities.get(tool) + 1);
     }
 
     /**
@@ -40,8 +76,7 @@ public class Warehouse {
      * @param tool - The tool to be returned
      */
     public void releaseTool(Tool tool) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        addTool(tool);
     }
 
     /**
@@ -51,8 +86,13 @@ public class Warehouse {
      * @return A ManufactoringPlan for product
      */
     public ManufactoringPlan getPlan(String product) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        for (ManufactoringPlan plan : plans)
+        {
+            if (plan.getProductName().equals(product))
+                return plan;
+        }
+
+        return null;
     }
 
     /**
@@ -61,8 +101,7 @@ public class Warehouse {
      * @param plan - a ManufactoringPlan to be stored
      */
     public void addPlan(ManufactoringPlan plan) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        plans.add(plan);
     }
 
     /**
@@ -72,7 +111,6 @@ public class Warehouse {
      * @param qty  - amount of tools of type tool to be stored
      */
     public void addTool(Tool tool, int qty) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        toolsAndQuantities.put(tool, qty);
     }
 }

@@ -35,9 +35,10 @@ public class Simulator {
 
         ConcurrentLinkedQueue<Product> products = new ConcurrentLinkedQueue<>();
 
+        workStealingThreadPool.start();
+
         for (Wave currWave: waves) {
 
-            workStealingThreadPool.start();
             int numberOfTasks = 0;
 
             for (Integer curr : currWave.getProductsAndQuantities().values())
@@ -106,6 +107,8 @@ public class Simulator {
             //convert the json string back to object
             ParseData obj = gson.fromJson(br, ParseData.class);
             WorkStealingThreadPool myWorkStealingThreadPool = new WorkStealingThreadPool(obj.getThreads());
+
+
 
             Simulator.attachWorkStealingThreadPool(new WorkStealingThreadPool(4));
             ConcurrentLinkedQueue<Product> simulationResult;
