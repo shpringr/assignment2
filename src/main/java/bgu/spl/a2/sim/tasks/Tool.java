@@ -28,4 +28,11 @@ public class Tool {
         this.qty = qty;
     }
 
+    @Override
+    public String toString() {
+        return "Tool{" +
+                "tool='" + tool + '\'' +
+                ", qty=" + qty +
+                '}';
+    }
 }

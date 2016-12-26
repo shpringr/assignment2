@@ -9,9 +9,19 @@ public class RandomSumPliers implements Tool {
         return "rs-pliers";
     }
 
+
     public long useOn(Product p) {
-        Random rnd = new Random(p.getStartId());
-        int count = (int) (p.getStartId() % 10000);
+        long value=0;
+        for(Product part : p.getParts()){
+            value+=Math.abs(randomP(part.getFinalId()));
+        }
+        return value;
+    }
+
+
+    public long randomP(long p) {
+        Random rnd = new Random(p);
+        int count = (int) (p % 10000);
         long sum = 0;
 
         for (int i=0; i<=count; i++){

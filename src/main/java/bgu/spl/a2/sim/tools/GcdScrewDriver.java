@@ -10,10 +10,14 @@ public class GcdScrewDriver implements Tool {
     }
 
     public long useOn(Product p) {
-        return gcdThing(p.getStartId(), reverse(p.getStartId()));
+        long value=0;
+        for(Product part : p.getParts()){
+            value+=Math.abs(gcd(part.getFinalId(), reverse(part.getFinalId())));
+        }
+        return value;
     }
 
-    private long gcdThing(long a, long b) {
+    private long gcd(long a, long b) {
         BigInteger b1 = BigInteger.valueOf(a);
         BigInteger b2 = BigInteger.valueOf(b);
         BigInteger gcd = b1.gcd(b2);

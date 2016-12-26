@@ -40,4 +40,12 @@ public class Plan {
         this.parts = parts;
     }
 
+    @Override
+    public String toString() {
+        return "Plan{" +
+                "product='" + product + '\'' +
+                ", tools=" + tools +
+                ", parts=" + parts +
+                '}';
+    }
 }

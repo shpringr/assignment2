@@ -19,7 +19,7 @@ public class ParseData {
     private List<Plan> plans = null;
     @SerializedName("waves")
     @Expose
-    private List<List<Wave>> waves = null;
+    private List<List<Order>> waves = null;
 
     public Integer getThreads() {
         return threads;
@@ -45,12 +45,21 @@ public class ParseData {
         this.plans = plans;
     }
 
-    public List<List<Wave>> getWaves() {
+    public List<List<Order>> getWaves() {
         return waves;
     }
 
-    public void setWaves(List<List<Wave>> waves) {
+    public void setWaves(List<List<Order>> waves) {
         this.waves = waves;
     }
 
+    @Override
+    public String toString() {
+        return "ParseData{" +
+                "threads=" + threads +
+                ", tools=" + tools +
+                ", plans=" + plans +
+                ", waves=" + waves +
+                '}';
+    }
 }

@@ -10,7 +10,11 @@ public class NextPrimeHammer implements Tool {
     }
 
     public long useOn(Product p) {
-        return nextPrime(p.getStartId());
+        long value=0;
+        for(Product part : p.getParts()){
+            value+=Math.abs(nextPrime(part.getFinalId()));
+        }
+        return value;
     }
 
     private long nextPrime(long next) {

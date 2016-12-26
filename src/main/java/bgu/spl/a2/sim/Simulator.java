@@ -9,6 +9,9 @@ import bgu.spl.a2.WorkStealingThreadPool;
 import bgu.spl.a2.sim.tasks.ManufacturingTask;
 import bgu.spl.a2.sim.tasks.ParseData;
 import bgu.spl.a2.sim.tasks.Wave;
+import bgu.spl.a2.sim.tools.GcdScrewDriver;
+import bgu.spl.a2.sim.tools.NextPrimeHammer;
+import bgu.spl.a2.sim.tools.RandomSumPliers;
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -26,12 +29,14 @@ public class Simulator {
 
     private static WorkStealingThreadPool workStealingThreadPool;
     private static List<Wave> waves;
+    private static Warehouse warehouse= new Warehouse();
 
     /**
      * Begin the simulation
      * Should not be called before attachWorkStealingThreadPool()
      */
-    public static ConcurrentLinkedQueue<Product> start() {
+/*    public static ConcurrentLinkedQueue<Product> start() {
+
 
         ConcurrentLinkedQueue<Product> products = new ConcurrentLinkedQueue<>();
 
@@ -84,8 +89,9 @@ public class Simulator {
 //        for (int i = 0; i < qty; i++)
 //            Simulator.workStealingThreadPool.submit(new ManufacturingTask(startId + i, product));
 
-    }
 
+    }
+*/
     /**
      * attach a WorkStealingThreadPool to the Simulator, this WorkStealingThreadPool will be used to run the simulation
      *
@@ -95,34 +101,65 @@ public class Simulator {
         workStealingThreadPool = myWorkStealingThreadPool;
     }
 
-    public static int main(String[] args) {
-        String jasonFileLocation = args[1];
+    private static void addTool(String toolType, int qty){
+        if (toolType.equals("gs-driver")){
+            GcdScrewDriver tool = new GcdScrewDriver();
+            warehouse.addTool(tool, qty);
+        }
+        else if (toolType.equals("np-hammer")){
+            NextPrimeHammer tool = new NextPrimeHammer();
+            warehouse.addTool(tool, qty);
+        }
+        else if (toolType.equals("rs-pliers")){
+            RandomSumPliers tool = new RandomSumPliers();
+            warehouse.addTool(tool, qty);
+        }
+    }
+
+    public static void main(String[] args) {
+        String jasonFileLocation = args[0];
         Gson gson = new Gson();
 
         try {
-
-            BufferedReader br = new BufferedReader(
-                    new FileReader(jasonFileLocation));
+            BufferedReader br = new BufferedReader(new FileReader(jasonFileLocation));
 
             //convert the json string back to object
             ParseData obj = gson.fromJson(br, ParseData.class);
+            WorkStealingThreadPool workStealingThreadPoolTmp = new WorkStealingThreadPool(obj.getThreads());
+            attachWorkStealingThreadPool(workStealingThreadPoolTmp);
+
+            //add tool to Warehouse
+            for (int i = 0; i < obj.getTools().size() ; i++) {
+                addTool(obj.getTools().get(i).getTool(),obj.getTools().get(i).getQty() );
+            }
+
+            for (int i = 0; i < obj.getPlans().size(); i++) {
+
+            }
+
+
+
+
+            //System.out.println(obj.toString());
+
+
             WorkStealingThreadPool myWorkStealingThreadPool = new WorkStealingThreadPool(obj.getThreads());
 
 
 
             Simulator.attachWorkStealingThreadPool(new WorkStealingThreadPool(4));
             ConcurrentLinkedQueue<Product> simulationResult;
-            simulationResult = Simulator.start();
+  //          simulationResult = Simulator.start();
             FileOutputStream fout = new FileOutputStream("result.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(simulationResult);
+    //        oos.writeObject(simulationResult);
 
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return 0;
+        //return 0;
     }
 
 }
