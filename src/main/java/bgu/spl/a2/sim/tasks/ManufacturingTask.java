@@ -10,9 +10,6 @@ import bgu.spl.a2.sim.tools.Tool;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Orel Hazan on 25/12/2016.
- */
 public class ManufacturingTask extends Task<Product> {
 
     private Product product;
@@ -47,15 +44,19 @@ public class ManufacturingTask extends Task<Product> {
     }
 
     private long calcFinalIdOfTools(String[] tools) {
+
         long finalId = 0;
 
         for (String toolType : tools) {
             Deferred<Tool> toolDeferred = warehouse.acquireTool(toolType);
 
+            //TODO: hara
             while (!toolDeferred.isResolved())
-            {}
+            {
+                toolDeferred = warehouse.acquireTool(toolType);
+            }
 
-            finalId+= toolDeferred.get().useOn(product);
+            finalId += toolDeferred.get().useOn(product);
             warehouse.releaseTool(toolDeferred.get());
         }
 
@@ -66,9 +67,10 @@ public class ManufacturingTask extends Task<Product> {
         List<ManufacturingTask> manufacturingTasks = new ArrayList<>();
 
         for (String partName : plans) {
-            Product part = new Product(product.getStartId(), partName);
-            part.getParts().add(part);
+            Product part = new Product(product.getStartId()+1, partName);
+            product.addPart(part);
             ManufacturingTask manufacturingTask = new ManufacturingTask(part, warehouse);
+            spawn(manufacturingTask);
             manufacturingTasks.add(manufacturingTask);
         }
 

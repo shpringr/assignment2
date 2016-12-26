@@ -21,6 +21,8 @@ public class Warehouse {
 
     Map<Tool, Integer> toolsAndQuantities;
     List<ManufactoringPlan> plans;
+    final Object lock = new Object();
+
     /**
      * Constructor
      */
@@ -32,28 +34,30 @@ public class Warehouse {
     /**
      * Tool acquisition procedure
      * Note that this procedure is non-blocking and should return immediately     *
+     *
      * @param type - string describing the required tool
      * @return a deferred promise for the  requested tool
      */
-    public Deferred<Tool> acquireTool(String type)
-    {
-        Deferred<Tool> toolDeferred = new Deferred<>();
-        for(Tool tool : toolsAndQuantities.keySet()) {
-                if (tool.getType().equals(type))
-                {
+    public Deferred<Tool> acquireTool(String type) {
+
+        synchronized (lock) {
+            Deferred<Tool> toolDeferred = new Deferred<>();
+
+            for (Tool tool : toolsAndQuantities.keySet()) {
+                if (tool.getType().equals(type)) {
                     reduceTool(tool);
                     toolDeferred.resolve(tool);
                 }
-        }
+            }
+//        if (!toolDeferred.isResolved())
+//        {
+//         toolDeferred.whenResolved(() -> {
+//             acquireTool(type);
+//         });
+//        }
 
-        if (!toolDeferred.isResolved())
-        {
-         toolDeferred.whenResolved(() -> {
-             acquireTool(type);
-         });
+            return toolDeferred;
         }
-
-        return toolDeferred;
     }
 
     private void reduceTool(Tool tool) {
@@ -67,7 +71,7 @@ public class Warehouse {
         if (!toolsAndQuantities.keySet().contains(tool))
             addTool(tool, 1);
         else
-            addTool(tool,toolsAndQuantities.get(tool) + 1);
+            addTool(tool, toolsAndQuantities.get(tool) + 1);
     }
 
     /**
@@ -86,8 +90,7 @@ public class Warehouse {
      * @return A ManufactoringPlan for product
      */
     public ManufactoringPlan getPlan(String product) {
-        for (ManufactoringPlan plan : plans)
-        {
+        for (ManufactoringPlan plan : plans) {
             if (plan.getProductName().equals(product))
                 return plan;
         }
