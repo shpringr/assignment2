@@ -1,7 +1,11 @@
 package bgu.spl.a2.sim.tasks;
 
+import bgu.spl.a2.Deferred;
 import bgu.spl.a2.Task;
 import bgu.spl.a2.sim.Product;
+import bgu.spl.a2.sim.Warehouse;
+import bgu.spl.a2.sim.conf.ManufactoringPlan;
+import bgu.spl.a2.sim.tools.Tool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,38 +16,62 @@ import java.util.List;
 public class ManufacturingTask extends Task<Product> {
 
     private Product product;
+    private Warehouse warehouse;
 
-    public ManufacturingTask(Product product)
-    {
+    public ManufacturingTask(Product product, Warehouse warehouse) {
         this.product = product;
+        this.warehouse = warehouse;
     }
 
     @Override
-    protected void start() {
-        if (product.getParts().size() > 0) {
+    protected void start()
+    {
+        ManufactoringPlan plan = warehouse.getPlan(product.getName());
 
-            List<ManufacturingTask> manufacturingTasks = new ArrayList<>();
-            for (Product part : product.getParts()) {
+        if (plan.getParts().length > 0) {
 
-                ManufacturingTask manufacturingTask = new ManufacturingTask(part);
-                manufacturingTasks.add(manufacturingTask);
-            }
-            whenResolved(manufacturingTasks, () -> {
-                        int finalId = 0;
-                        for (ManufacturingTask task : manufacturingTasks) {
-                            finalId += task.getResult().get().getFinalId();
-                        }
-                            ///ADD TOOLS
-                        product.assembly(finalId);
+            List<ManufacturingTask> manufacturedTasks = manfactureParts(plan.getParts());
+
+            whenResolved(manufacturedTasks, () -> {
+                        long allValues = calcFinalIdOfTools(plan.getTools());
+                        product.setFinalID(product.getStartId() + allValues);
                         complete(product);
                     }
             );
         }
         else
-            {
-                product.assembly(product.getStartId() //+ all tools.useOn
-                         );
-                complete(product);
+        {
+            product.setFinalID(product.getStartId());
+            complete(product);
         }
+    }
+
+    private long calcFinalIdOfTools(String[] tools) {
+        long finalId = 0;
+
+        for (String toolType : tools) {
+            Deferred<Tool> toolDeferred = warehouse.acquireTool(toolType);
+
+            while (!toolDeferred.isResolved())
+            {}
+
+            finalId+= toolDeferred.get().useOn(product);
+            warehouse.releaseTool(toolDeferred.get());
+        }
+
+        return finalId;
+    }
+
+    private List<ManufacturingTask> manfactureParts(String[] plans) {
+        List<ManufacturingTask> manufacturingTasks = new ArrayList<>();
+
+        for (String partName : plans) {
+            Product part = new Product(product.getStartId(), partName);
+            part.getParts().add(part);
+            ManufacturingTask manufacturingTask = new ManufacturingTask(part, warehouse);
+            manufacturingTasks.add(manufacturingTask);
+        }
+
+        return manufacturingTasks;
     }
 }

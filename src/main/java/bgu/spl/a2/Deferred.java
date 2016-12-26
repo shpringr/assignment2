@@ -1,6 +1,5 @@
 package bgu.spl.a2;
 
-import javax.security.auth.callback.Callback;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +21,9 @@ public class Deferred<T> {
 
     private T value = null;
     private List<Runnable> callbacksList = new ArrayList<>();
-    boolean isResolve= false;
+    private boolean isResolve= false;
 
-    protected List<Runnable> getCallbacks() {
+    List<Runnable> getCallbacks() {
         return callbacksList;
     }
 
@@ -41,6 +40,7 @@ public class Deferred<T> {
         {
             throw new IllegalStateException("this method is called and this object is not yet resolved");
         }
+
         return value;
     }
 
@@ -67,7 +67,7 @@ public class Deferred<T> {
      */
     public void resolve(T value) {
         if (isResolve) {
-            throw new IllegalStateException(" this object is already resolved");
+            throw new IllegalStateException("this object is already resolved");
         }
         else{
             this.value = value;

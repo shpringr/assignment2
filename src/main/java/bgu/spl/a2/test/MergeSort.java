@@ -17,7 +17,8 @@ public class MergeSort extends Task<int[]> {
 
     public MergeSort(int[] array) {
         this.array = array;
-        check = array;
+        //TODO:BORRAR
+        //check = array;
     }
 
     @Override

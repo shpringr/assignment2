@@ -20,7 +20,8 @@ public class SumMatrix extends Task<int[]>{
         public SumRow(int[][] array,int r) {
             this.array = array;
             this.r=r;
-            check = array[r];
+            //TODO:BORRAR
+            //check = array[r];
         }
         protected void start(){
             int sum=0;
@@ -33,7 +34,8 @@ public class SumMatrix extends Task<int[]>{
     private int[][] array;
     public SumMatrix(int[][] array) {
         this.array = array;
-        check = array;
+        //TODO:BORRAR
+        // check = array;
     }
     protected void start() {
         int sum = 0;

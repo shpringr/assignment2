@@ -20,14 +20,9 @@ public class WorkStealingThreadPool {
     private List<Thread> threads;
     private List<ConcurrentLinkedDeque<Task>> queues;
     private VersionMonitor vm;
-    private Object lockPrint = new Object();
-
-    VersionMonitor getVm() {
-        return vm;
-    }
-    ConcurrentLinkedDeque<Task> getQueue(int id) {
-        return queues.get(id);
-    }
+    //TODO: get rude of all the prints and commented out code and shit like this.
+    //TODO: for muhamad - if u see that it means we forgot flash with ittt
+    //  private Object lockPrint = new Object();
 
     /**
      * creates a {@link WorkStealingThreadPool} which has nthreads
@@ -55,18 +50,27 @@ public class WorkStealingThreadPool {
             threads.add(i, new Thread(currProcessor));
         }
     }
+
+    VersionMonitor getVm() {
+        return vm;
+    }
+
+    ConcurrentLinkedDeque<Task> getQueue(int id) {
+        return queues.get(id);
+    }
+
     /**
      * submits a task to be executed by a processor belongs to this thread pool
      *
      * @param task the task to execute
      */
-    public void submit(Task<?> task) {
+    public void submit(Task<?> task)
+    {
         int randomProcessor = ThreadLocalRandom.current().nextInt(0,processors.size());
-
         queues.get(randomProcessor).addFirst(task);
-
-        printProcessorStates("submit processor :" + randomProcessor);
         vm.inc();
+        //TODO:BORRAR
+        //printProcessorStates("submit processor :" + randomProcessor);
     }
 
     /**
@@ -92,7 +96,8 @@ public class WorkStealingThreadPool {
     /**
      * start the threads belongs to this thread pool
      */
-    public void start() {
+    public void start()
+    {
         for (Thread thread : threads)
         {
             thread.start();
@@ -103,8 +108,9 @@ public class WorkStealingThreadPool {
         return processors;
     }
 
-    void printProcessorStates(String msg) {
 
+    //TODO:BORRAR
+//    void printProcessorStates(String msg) {
 //        synchronized (lockPrint) {
 //
 //            System.out.println(msg);
@@ -123,5 +129,5 @@ public class WorkStealingThreadPool {
 //            System.out.println("*******");
 //            System.out.println();
 //        }
-    }
+//    }
 }

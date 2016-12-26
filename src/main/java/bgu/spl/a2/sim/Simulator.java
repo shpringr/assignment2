@@ -8,6 +8,7 @@ package bgu.spl.a2.sim;
 import bgu.spl.a2.WorkStealingThreadPool;
 import bgu.spl.a2.sim.conf.ManufactoringPlan;
 import bgu.spl.a2.sim.tasks.ManufacturingTask;
+import bgu.spl.a2.sim.tasks.Order;
 import bgu.spl.a2.sim.tasks.ParseData;
 import bgu.spl.a2.sim.tasks.Wave;
 import bgu.spl.a2.sim.tools.GcdScrewDriver;
@@ -37,8 +38,7 @@ public class Simulator {
      * Begin the simulation
      * Should not be called before attachWorkStealingThreadPool()
      */
-/*    public static ConcurrentLinkedQueue<Product> start() {
-
+    public static ConcurrentLinkedQueue<Product> start() {
 
         ConcurrentLinkedQueue<Product> products = new ConcurrentLinkedQueue<>();
 
@@ -48,19 +48,19 @@ public class Simulator {
 
             int numberOfTasks = 0;
 
-            for (Integer curr : currWave.getProductsAndQuantities().values())
+            for (Order curr : currWave.getOrders())
             {
-                numberOfTasks+= curr;
+                numberOfTasks+= curr.getQty();
             }
 
             CountDownLatch l = new CountDownLatch(numberOfTasks);
 
-            for (String productName : currWave.getProductsAndQuantities().keySet()) {
+            for (Order order : currWave.getOrders()) {
 
-                for (int i = 0; i < currWave.getProductsAndQuantities().get(productName); i++)
+                for (int i = 0; i < order.getQty(); i++)
                 {
-                    Product currProduct = new Product(currWave.getStartId() + i , productName);
-                    ManufacturingTask currTask = new ManufacturingTask(currProduct);
+                    Product currProduct = new Product(order.getStartId() + i , order.getProduct());
+                    ManufacturingTask currTask = new ManufacturingTask(currProduct,warehouse);
                     Simulator.workStealingThreadPool.submit(currTask);
 
                     currTask.getResult().whenResolved(() -> {
@@ -84,16 +84,8 @@ public class Simulator {
         }
 
         return products;
-//
-//        int startId = 50123450;
-//        int qty = 100;
-//        Product product = new Product(startId, "yphone30");
-//        for (int i = 0; i < qty; i++)
-//            Simulator.workStealingThreadPool.submit(new ManufacturingTask(startId + i, product));
-
-
     }
-*/
+
     /**
      * attach a WorkStealingThreadPool to the Simulator, this WorkStealingThreadPool will be used to run the simulation
      *

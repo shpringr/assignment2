@@ -15,12 +15,13 @@ import java.util.Collection;
  */
 public abstract class Task<R> {
 
-    public Object check = new Object();
+    //TODO:BORRAR
+    //public Object check = new Object();
 
     private Deferred<R> deferred = new Deferred<R>();
     private Processor currProcessor;
     private boolean started = false;
-    private int numberOfTaskToWait = 0;
+    private int numberOfTaskToWaitFor = 0;
     private final Object lockNumOfTask = new Object();
     private Runnable continueCallback;
 
@@ -30,7 +31,6 @@ public abstract class Task<R> {
      * {@link #handle(bgu.spl.a2.Processor)} method
      */
     protected abstract void start();
-
 
     /**
      * start/continue handling the task
@@ -46,8 +46,7 @@ public abstract class Task<R> {
      *
      * @param handler the handler that wants to handle the task
      */
-    /*package*/
-    final void handle(Processor handler) {
+    /*package*/ final void handle(Processor handler) {
         currProcessor = handler;
         if (!started) {
             started = true;
@@ -63,8 +62,8 @@ public abstract class Task<R> {
      * @param task the task to execute
      */
     protected final void spawn(Task<?>... task) {
-        for (Task task1 : task) {
-            currProcessor.addTaskToQueue(task1);
+        for (Task subTask : task) {
+            currProcessor.addTaskToQueue(subTask);
         }
     }
 
@@ -80,17 +79,17 @@ public abstract class Task<R> {
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
         continueCallback = callback;
-        numberOfTaskToWait=tasks.size();
+        numberOfTaskToWaitFor = tasks.size();
 
-        for (Task task : tasks) {
+        for (Task task : tasks)
+        {
             task.getResult().whenResolved(() -> {
                 synchronized (lockNumOfTask) {
-                    if (numberOfTaskToWait == 1) {
+                    if (numberOfTaskToWaitFor == 1) {
                         currProcessor.addTaskToQueue(this);
                     } else
-                        numberOfTaskToWait--;
+                        numberOfTaskToWaitFor--;
                 }
-
             });
         }
     }

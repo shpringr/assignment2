@@ -46,6 +46,10 @@ public class Product {
         return finalID;
     }
 
+    public void setFinalID(long finalID) {
+        this.finalID = finalID;
+    }
+
     /**
      * @return Returns all parts of this product as a List of Products
      */
@@ -60,13 +64,6 @@ public class Product {
      */
     public void addPart(Product p) {
         parts.add(p);
-    }
 
-    public void assembly(long finalId) {
-        if (parts.isEmpty())
-        {
-
-        }
-        this.finalID = finalId;
     }
 }
