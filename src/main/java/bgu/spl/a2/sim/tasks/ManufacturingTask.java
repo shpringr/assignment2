@@ -15,9 +15,7 @@ public class ManufacturingTask extends Task<Product> {
 
     public ManufacturingTask(Product product)
     {
-
         this.product = product;
-
     }
 
     @Override
@@ -35,16 +33,16 @@ public class ManufacturingTask extends Task<Product> {
                         for (ManufacturingTask task : manufacturingTasks) {
                             finalId += task.getResult().get().getFinalId();
                         }
-
-                        product.setFinalId(finalId);
+                            ///ADD TOOLS
+                        product.assembly(finalId);
                         complete(product);
                     }
             );
-
         }
         else
             {
-                product.setFinalId(product.getStartId());
+                product.assembly(product.getStartId() //+ all tools.useOn
+                         );
                 complete(product);
         }
     }
