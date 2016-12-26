@@ -16,7 +16,7 @@ import java.util.Collection;
 public abstract class Task<R> {
 
     //TODO:BORRAR
-    //public Object check = new Object();
+    public Object check = new Object();
 
     private Deferred<R> deferred = new Deferred<R>();
     private Processor currProcessor;

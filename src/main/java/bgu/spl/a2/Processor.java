@@ -1,5 +1,6 @@
 package bgu.spl.a2;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -50,7 +51,7 @@ public class Processor implements Runnable {
                     Task t = tasks.pollFirst();
                     t.handle(this);
                     //TODO:BORRAR
-                    // pool.printProcessorStates("run after submit processor :" + id);
+                    pool.printProcessorStates("run after submit processor :" + id);
                 } else {
                     if (!tryStealTasks())
                         pool.getVm().await(pool.getVm().getVersion());
@@ -61,7 +62,7 @@ public class Processor implements Runnable {
         catch (InterruptedException ignored){
         }
         //TODO:BORRAR
-        //System.out.println("Processor " + id + " interrupted!!");
+        System.out.println("Processor " + id + " interrupted!!");
     }
 
     private boolean tryStealTasks() {
@@ -82,11 +83,11 @@ public class Processor implements Runnable {
                     pool.getQueue(id).addFirst(task);
 
                     //TODO:BORRAR
-                    /*String msg = "Processor " + id + " stole from " + nextToSteal + " task " ;
-                    if (task.check instanceof int[])
-                                msg += Arrays.toString((int[]) task.check);
-
-                    pool.printProcessorStates(msg);*/
+                    String msg = "Processor " + id + " stole from " + nextToSteal + " task " ;
+                    //if (task.check instanceof int[])
+                    //msg += Arrays.toString((int[]) task.check);
+                        msg+= task.check.toString();
+                    pool.printProcessorStates(msg);
                 }
             } else {
                 nextToSteal = (nextToSteal + 1) % pool.getProcessors().size();
@@ -101,7 +102,7 @@ public class Processor implements Runnable {
         pool.getQueue(id).addFirst(task);
         pool.getVm().inc();
         //TODO:BORRAR
-        //pool.printProcessorStates("spwan processor :" + id);
+        pool.printProcessorStates("spwan processor :" + id + "  " + task.check.toString());
     }
 
     int getId() {

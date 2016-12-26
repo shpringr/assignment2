@@ -22,7 +22,7 @@ public class WorkStealingThreadPool {
     private VersionMonitor vm;
     //TODO: get rude of all the prints and commented out code and shit like this.
     //TODO: for muhamad - if u see that it means we forgot flash with ittt
-    //  private Object lockPrint = new Object();
+      private Object lockPrint = new Object();
 
     /**
      * creates a {@link WorkStealingThreadPool} which has nthreads
@@ -70,7 +70,7 @@ public class WorkStealingThreadPool {
         queues.get(randomProcessor).addFirst(task);
         vm.inc();
         //TODO:BORRAR
-        //printProcessorStates("submit processor :" + randomProcessor);
+        printProcessorStates("submit processor :" + randomProcessor + "  "+ task.check.toString());
     }
 
     /**
@@ -110,10 +110,10 @@ public class WorkStealingThreadPool {
 
 
     //TODO:BORRAR
-//    void printProcessorStates(String msg) {
-//        synchronized (lockPrint) {
-//
-//            System.out.println(msg);
+    void printProcessorStates(String msg) {
+        synchronized (lockPrint) {
+
+            System.out.println(msg);
 //            System.out.println("*******");
 //            for (int i = 0; i < processors.size(); i++) {
 //                if (threads.get(i).isAlive())
@@ -121,13 +121,14 @@ public class WorkStealingThreadPool {
 //                            + "] has " + queues.get(i).size() + " tasks");
 //                if (!queues.get(i).isEmpty())
 //                    for (Task task : queues.get(i)) {
-//                        if (task.check instanceof int[])
-//                            System.out.println("    " + Arrays.toString((int[]) task.check));
+//                        System.out.println(task.check.toString());
+//                        //if (task.check instanceof int[])
+//                          //  System.out.println("    " + Arrays.toString((int[]) task.check));
 //                    }
 //            }
 //
 //            System.out.println("*******");
-//            System.out.println();
-//        }
-//    }
+            System.out.println();
+        }
+   }
 }

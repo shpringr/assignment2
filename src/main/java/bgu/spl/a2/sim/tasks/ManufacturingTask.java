@@ -18,6 +18,7 @@ public class ManufacturingTask extends Task<Product> {
     public ManufacturingTask(Product product, Warehouse warehouse) {
         this.product = product;
         this.warehouse = warehouse;
+        check = product.getName();
     }
 
     @Override
