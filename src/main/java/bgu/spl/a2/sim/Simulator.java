@@ -126,6 +126,40 @@ public class Simulator {
         }
     }
 
+    private static void addPlan(String product,String[] parts,String[] tools){
+
+    }
+
+    private static void parseData(ParseData obj) {
+
+        //create WorkStealingThreadPool
+        WorkStealingThreadPool workStealingThreadPoolTmp = new WorkStealingThreadPool(obj.getThreads());
+        Simulator.attachWorkStealingThreadPool(workStealingThreadPoolTmp);
+
+        //add tool to Warehouse
+        for (int i = 0; i < obj.getTools().size(); i++) {
+            addTool(obj.getTools().get(i).getTool(), obj.getTools().get(i).getQty());
+        }
+
+        //add Plan to warehose
+        ManufactoringPlan plan;
+        for (int i = 0; i < obj.getPlans().size(); i++) {
+            String product = obj.getPlans().get(i).getProduct();
+            String[] parts = obj.getPlans().get(i).getParts();
+            String[] tools = obj.getPlans().get(i).getTools();
+            plan = new ManufactoringPlan(product, parts, tools);
+            warehouse.addPlan(plan);
+        }
+
+        //add Wave to Wave List
+        Wave wave;
+        int size = obj.getWaves().size();
+        for (int i = 0; i < size; i++) {
+            wave = new Wave(obj.getWaves().get(i));
+            waves.add(wave);
+        }
+    }
+
     public static void main(String[] args) {
         try
         {
@@ -133,39 +167,17 @@ public class Simulator {
             Gson gson = new Gson();
 
             BufferedReader br = new BufferedReader(new FileReader(jasonFileLocation));
-
             //convert the json string back to object
             ParseData obj = gson.fromJson(br, ParseData.class);
-            WorkStealingThreadPool workStealingThreadPoolTmp = new WorkStealingThreadPool(obj.getThreads());
 
-            //add tool to Warehouse
-            for (int i = 0; i < obj.getTools().size(); i++) {
-                addTool(obj.getTools().get(i).getTool(), obj.getTools().get(i).getQty());
-            }
-            ManufactoringPlan plan;
-            for (int i = 0; i < obj.getPlans().size(); i++) {
-                String product = obj.getPlans().get(i).getProduct();
-                String[] parts = obj.getPlans().get(i).getParts();
-                String[] tools = obj.getPlans().get(i).getTools();
-                plan = new ManufactoringPlan(product, parts, tools);
-                warehouse.addPlan(plan);
-            }
-
-            Wave wave;
-            int size = obj.getWaves().size();
-            for (int i = 0; i < size; i++) {
-                wave = new Wave(obj.getWaves().get(i));
-                waves.add(wave);
-            }
-
-            Simulator.attachWorkStealingThreadPool(workStealingThreadPoolTmp);
+            //parseData
+            parseData(obj);
 
             ConcurrentLinkedQueue<Product> simulationResult;
             simulationResult = Simulator.start();
             FileOutputStream fout = new FileOutputStream("result.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(simulationResult);
-
 
         } catch (IOException e) {
             e.printStackTrace();

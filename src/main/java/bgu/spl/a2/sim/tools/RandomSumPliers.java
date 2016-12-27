@@ -24,7 +24,7 @@ public class RandomSumPliers implements Tool {
         int count = (int) (p % 10000);
         long sum = 0;
 
-        for (int i=0; i<=count; i++){
+        for (int i=0; i<count; i++){
             long tmp = rnd.nextInt();
             sum += tmp;
         }
