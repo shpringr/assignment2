@@ -25,10 +25,12 @@ public class RandomSumPliers implements Tool {
         long sum = 0;
 
         for (int i=0; i<=count; i++){
-            long tmp = rnd.nextLong();
+            long tmp = rnd.nextInt();
             sum += tmp;
         }
 
         return sum;
     }
+
+
 }
