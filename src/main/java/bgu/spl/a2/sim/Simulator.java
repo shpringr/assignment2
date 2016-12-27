@@ -157,6 +157,7 @@ public class Simulator {
             FileOutputStream fout = new FileOutputStream("result.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(simulationResult);
+            oos.close();
 
             //TODO:BORRAR
             deserializeObject();
@@ -189,4 +190,35 @@ public class Simulator {
         catch(IOException ex){
         }
     }
+
+
+
+    /*
+        //StringWriter res = new StringWriter();
+        // deserialize the list of Vehicules
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("result.ser"));
+            ConcurrentLinkedQueue<Product> deserializedVehicles = (ConcurrentLinkedQueue<Product>) ois.readObject();
+            ois.close();
+
+            Iterator<Product> itr= deserializedVehicles.iterator();
+            res.write("ProductName: " + ((Product)itr).getName() + " Product Id = " + ((Product)itr).getFinalId() + "\n" + "PartsList {");
+
+            while(itr.hasNext()){
+                res.write("ProductName: " + itr.next().getName() + " Product Id = " + itr.next().getFinalId() + "\n" + "PartsList {" );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(); // handle this appropriately
+        }
+
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream("result.txt"), "utf-8"))) {
+            writer.write(String.valueOf(res));
+        }
+        catch (Exception ex){
+            ex.printStackTrace(); // handle this appropriately
+        }
+*/
+
 }

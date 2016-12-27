@@ -77,4 +77,5 @@ public class Product implements Serializable {
                 "\n, parts=" + parts +
                 '}';
     }
+
 }
