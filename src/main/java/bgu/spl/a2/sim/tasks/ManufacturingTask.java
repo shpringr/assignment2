@@ -9,6 +9,7 @@ import bgu.spl.a2.sim.tools.Tool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class ManufacturingTask extends Task<Product> {
 
@@ -45,22 +46,32 @@ public class ManufacturingTask extends Task<Product> {
         }
     }
 
-    private long calcFinalIdOfTools(String[] tools) {
-
+    private long calcFinalIdOfTools(String[] tools)
+    {
         long finalId = 0;
+        List<Long> toolResults = new ArrayList<>();
+        CountDownLatch countDownLatch = new CountDownLatch(tools.length);
 
-        for (String toolType : tools) {
+        for (String toolType : tools)
+        {
             Deferred<Tool> toolDeferred = warehouse.acquireTool(toolType);
 
-            //TODO: hara
-            // wait till it acquire the tool
-            while (!toolDeferred.isResolved())
-            {
-                toolDeferred = warehouse.acquireTool(toolType);
-            }
+            toolDeferred.whenResolved(() -> {
+                toolResults.add(toolDeferred.get().useOn(product));
+                warehouse.releaseTool(toolDeferred.get());
+                countDownLatch.countDown();
+            });
+        }
 
-            finalId += toolDeferred.get().useOn(product);
-            warehouse.releaseTool(toolDeferred.get());
+        try
+        {
+            countDownLatch.await();
+        }
+        catch (InterruptedException ignored) {}
+
+        for (long toolResult : toolResults)
+        {
+            finalId+= toolResult;
         }
 
         return finalId;

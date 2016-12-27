@@ -179,11 +179,12 @@ public class Simulator {
             //deserialize the List
             ConcurrentLinkedQueue<Product> recoveredQuarks = (ConcurrentLinkedQueue<Product>)input.readObject();
             //display its data
-
             for (Iterator<Product> it = recoveredQuarks.iterator(); it.hasNext(); ) {
                 Product quark = it.next();
                 System.out.println(quark.toString());
             }
+            System.out.println(recoveredQuarks.size());
+
         }
         catch(ClassNotFoundException ex){
         }

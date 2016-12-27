@@ -1,6 +1,5 @@
 package bgu.spl.a2;
 
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -103,9 +102,5 @@ public class Processor implements Runnable {
         pool.getVm().inc();
         //TODO:BORRAR
         pool.printProcessorStates("spwan processor :" + id + "  " + task.check.toString());
-    }
-
-    int getId() {
-        return id;
     }
 }

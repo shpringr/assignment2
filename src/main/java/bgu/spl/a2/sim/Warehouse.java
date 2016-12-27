@@ -19,16 +19,17 @@ import java.util.Map;
  */
 public class Warehouse {
 
-    Map<Tool, Integer> toolsAndQuantities;
-    List<ManufactoringPlan> plans;
-    final Object lock = new Object();
-
+    private Map<Tool, Integer> toolsAndQuantities;
+    private List<ManufactoringPlan> plans;
+    private final Object lock = new Object();
+    private Map<String, List<Deferred<Tool>>> toolsToWaitingDeffereds;
     /**
      * Constructor
      */
     public Warehouse() {
         toolsAndQuantities = new HashMap<>();
         plans = new ArrayList<>();
+        toolsToWaitingDeffereds = new HashMap<>();
     }
 
     /**
@@ -49,15 +50,24 @@ public class Warehouse {
                     toolDeferred.resolve(tool);
                 }
             }
-            //TODO:hara
-//        if (!toolDeferred.isResolved())
-//        {
-//         toolDeferred.whenResolved(() -> {
-//             acquireTool(type);
-//         });
-//        }
+
+            if (!toolDeferred.isResolved())
+            {
+                putDeferredInMap(type, toolDeferred);
+            }
 
             return toolDeferred;
+        }
+    }
+
+    private void putDeferredInMap(String type, Deferred<Tool> toolDeferred) {
+        if (toolsToWaitingDeffereds.containsKey(type))
+            toolsToWaitingDeffereds.get(type).add(toolDeferred);
+        else
+            {
+            List<Deferred<Tool>> deferredTools = new ArrayList<>();
+            deferredTools.add(toolDeferred);
+            toolsToWaitingDeffereds.put(type, deferredTools);
         }
     }
 
@@ -77,10 +87,17 @@ public class Warehouse {
     public void releaseTool(Tool tool)
     {
         addToolToInventory(tool);
+        resolveWaiting(tool);
+    }
+
+    private void resolveWaiting(Tool tool)
+    {
+        if (toolsToWaitingDeffereds.containsKey(tool.getType()))
+            toolsToWaitingDeffereds.get(tool.getType()).remove(0).resolve(tool);
     }
 
     private void addToolToInventory(Tool tool) {
-        if (!toolsAndQuantities.keySet().contains(tool))
+        if (!toolsAndQuantities.containsKey(tool))
             addTool(tool, 1);
         else
             addTool(tool, toolsAndQuantities.get(tool) + 1);
