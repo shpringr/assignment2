@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package bgu.spl.a2.sim;
 
 import bgu.spl.a2.WorkStealingThreadPool;
@@ -45,8 +40,8 @@ public class Simulator {
 
         for (Wave currWave : waves) {
 
-            CountDownLatch l = new CountDownLatch(getNumberOfProductsInWave(currWave));
             List<Product> productsInWave = getWaveProducts(currWave);
+            CountDownLatch l = new CountDownLatch(productsInWave.size());
 
             for (Product currProduct : productsInWave) 
             {
@@ -94,16 +89,6 @@ public class Simulator {
         return productList;
     }
 
-    private static int getNumberOfProductsInWave(Wave wave)
-    {
-        int numberOfTasks = 0;
-
-        for (Order curr : wave.getOrders()) {
-            numberOfTasks += curr.getQty();
-        }
-        return numberOfTasks;
-    }
-
     /**
      * attach a WorkStealingThreadPool to the Simulator, this WorkStealingThreadPool will be used to run the simulation
      *
@@ -124,10 +109,6 @@ public class Simulator {
             RandomSumPliers tool = new RandomSumPliers();
             warehouse.addTool(tool, qty);
         }
-    }
-
-    private static void addPlan(String product,String[] parts,String[] tools){
-
     }
 
     private static void parseData(ParseData obj) {
@@ -180,5 +161,4 @@ public class Simulator {
             e.printStackTrace();
         }
     }
-
 }

@@ -18,6 +18,7 @@ public class ManufacturingTask extends Task<Product> {
     public ManufacturingTask(Product product, Warehouse warehouse) {
         this.product = product;
         this.warehouse = warehouse;
+        //TODO:BORRAR
         check = product.getName();
     }
 
@@ -52,6 +53,7 @@ public class ManufacturingTask extends Task<Product> {
             Deferred<Tool> toolDeferred = warehouse.acquireTool(toolType);
 
             //TODO: hara
+            // wait till it acquire the tool
             while (!toolDeferred.isResolved())
             {
                 toolDeferred = warehouse.acquireTool(toolType);
@@ -64,7 +66,8 @@ public class ManufacturingTask extends Task<Product> {
         return finalId;
     }
 
-    private List<ManufacturingTask> manfactureParts(String[] plans) {
+    private List<ManufacturingTask> manfactureParts(String[] plans)
+    {
         List<ManufacturingTask> manufacturingTasks = new ArrayList<>();
 
         for (String partName : plans) {

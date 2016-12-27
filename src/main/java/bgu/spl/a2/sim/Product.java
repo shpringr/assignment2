@@ -20,7 +20,6 @@ public class Product implements Serializable {
      * @param startId - Product start id
      * @param name    - Product name
      */
-
     public Product(long startId, String name) {
         this.startId = startId;
         this.name = name;
@@ -67,6 +66,5 @@ public class Product implements Serializable {
      */
     public void addPart(Product p) {
         parts.add(p);
-
     }
 }

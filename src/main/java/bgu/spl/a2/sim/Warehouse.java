@@ -45,10 +45,11 @@ public class Warehouse {
 
             for (Tool tool : toolsAndQuantities.keySet()) {
                 if (tool.getType().equals(type)) {
-                    reduceTool(tool);
+                    reduceToolFromInventory(tool);
                     toolDeferred.resolve(tool);
                 }
             }
+            //TODO:hara
 //        if (!toolDeferred.isResolved())
 //        {
 //         toolDeferred.whenResolved(() -> {
@@ -60,18 +61,12 @@ public class Warehouse {
         }
     }
 
-    private void reduceTool(Tool tool) {
+    private void reduceToolFromInventory(Tool tool)
+    {
         if (toolsAndQuantities.get(tool).equals(0))
             toolsAndQuantities.remove(tool);
         else
             toolsAndQuantities.put(tool, toolsAndQuantities.get(tool) - 1);
-    }
-
-    private void addTool(Tool tool) {
-        if (!toolsAndQuantities.keySet().contains(tool))
-            addTool(tool, 1);
-        else
-            addTool(tool, toolsAndQuantities.get(tool) + 1);
     }
 
     /**
@@ -79,8 +74,16 @@ public class Warehouse {
      *
      * @param tool - The tool to be returned
      */
-    public void releaseTool(Tool tool) {
-        addTool(tool);
+    public void releaseTool(Tool tool)
+    {
+        addToolToInventory(tool);
+    }
+
+    private void addToolToInventory(Tool tool) {
+        if (!toolsAndQuantities.keySet().contains(tool))
+            addTool(tool, 1);
+        else
+            addTool(tool, toolsAndQuantities.get(tool) + 1);
     }
 
     /**
@@ -89,8 +92,10 @@ public class Warehouse {
      * @param product - a string with the product name for which a ManufactoringPlan is desired
      * @return A ManufactoringPlan for product
      */
-    public ManufactoringPlan getPlan(String product) {
-        for (ManufactoringPlan plan : plans) {
+    public ManufactoringPlan getPlan(String product)
+    {
+        for (ManufactoringPlan plan : plans)
+        {
             if (plan.getProductName().equals(product))
                 return plan;
         }

@@ -19,7 +19,7 @@ public class RandomSumPliers implements Tool {
     }
 
 
-    public long randomP(long p) {
+    private long randomP(long p) {
         Random rnd = new Random(p);
         int count = (int) (p % 10000);
         long sum = 0;
