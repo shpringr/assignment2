@@ -123,7 +123,7 @@ public class Simulator {
             addTool(obj.getTools().get(i).getTool(), obj.getTools().get(i).getQty());
         }
 
-        //add Plan to warehose
+        //add Plan to Warehouse
         ManufactoringPlan plan;
         for (int i = 0; i < obj.getPlans().size(); i++) {
             String product = obj.getPlans().get(i).getProduct();
