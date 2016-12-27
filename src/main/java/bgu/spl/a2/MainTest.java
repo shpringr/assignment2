@@ -1,23 +1,13 @@
-package bgu.spl.a2.sim.tools;
+package bgu.spl.a2;
 
-import bgu.spl.a2.sim.Product;
+import bgu.spl.a2.sim.tools.NextPrimeHammer;
 
+/**
+ * Created by ROTEM on 27/12/2016.
+ */
+public class MainTest {
 
-public class NextPrimeHammer implements Tool {
-
-    public String getType() {
-        return "np-hammer";
-    }
-
-    public long useOn(Product p) {
-        long value=0;
-        for(Product part : p.getParts()){
-            value+=Math.abs(nextPrime(part.getFinalId()));
-        }
-        return value;
-    }
-
-    private long nextPrime(long next) {
+    private static long nextPrime(long next) {
         boolean isPrime = false;
         long start = 2;
 
@@ -36,4 +26,12 @@ public class NextPrimeHammer implements Tool {
         }
         return next;
     }
+
+
+    public static void main(String[] args) {
+    long id = 502345607;
+    System.out.print(nextPrime(id));
+    }
+
+
 }

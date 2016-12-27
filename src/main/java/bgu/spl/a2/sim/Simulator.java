@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 
 import java.io.*;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -28,7 +27,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * A class describing the simulator for part 2 of the assignment
  */
-public class Simulator {
+public class Simulator  {
 
     private static WorkStealingThreadPool workStealingThreadPool;
     private static List<Wave> waves = new ArrayList<>();
@@ -143,7 +142,7 @@ public class Simulator {
                waves.add(wave);
             }
 
-            System.out.println(obj.toString());
+            //System.out.println(obj.toString());
 
 
             ConcurrentLinkedQueue<Product> simulationResult;
