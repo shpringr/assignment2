@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import java.io.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -157,8 +158,35 @@ public class Simulator {
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(simulationResult);
 
+            //TODO:BORRAR
+            deserializeObject();
+
+
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    //TODO:BORRAR
+    private static void deserializeObject() {
+        //deserialize the quarks.ser file
+        try{
+            InputStream file = new FileInputStream("result.ser");
+            InputStream buffer = new BufferedInputStream(file);
+            ObjectInput input = new ObjectInputStream(buffer);
+
+            //deserialize the List
+            ConcurrentLinkedQueue<Product> recoveredQuarks = (ConcurrentLinkedQueue<Product>)input.readObject();
+            //display its data
+
+            for (Iterator<Product> it = recoveredQuarks.iterator(); it.hasNext(); ) {
+                Product quark = it.next();
+                System.out.println(quark.toString());
+            }
+        }
+        catch(ClassNotFoundException ex){
+        }
+        catch(IOException ex){
         }
     }
 }
