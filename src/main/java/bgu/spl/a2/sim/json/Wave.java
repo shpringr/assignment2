@@ -1,12 +1,8 @@
-package bgu.spl.a2.sim.tasks;
+package bgu.spl.a2.sim.json;
 
 
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
-import java.util.Map;
 
 public class Wave {
 

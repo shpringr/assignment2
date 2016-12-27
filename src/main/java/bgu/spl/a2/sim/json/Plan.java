@@ -1,4 +1,4 @@
-package bgu.spl.a2.sim.tasks;
+package bgu.spl.a2.sim.json;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

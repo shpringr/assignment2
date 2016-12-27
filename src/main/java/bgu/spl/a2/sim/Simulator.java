@@ -8,9 +8,9 @@ package bgu.spl.a2.sim;
 import bgu.spl.a2.WorkStealingThreadPool;
 import bgu.spl.a2.sim.conf.ManufactoringPlan;
 import bgu.spl.a2.sim.tasks.ManufacturingTask;
-import bgu.spl.a2.sim.tasks.Order;
-import bgu.spl.a2.sim.tasks.ParseData;
-import bgu.spl.a2.sim.tasks.Wave;
+import bgu.spl.a2.sim.json.Order;
+import bgu.spl.a2.sim.json.ParseData;
+import bgu.spl.a2.sim.json.Wave;
 import bgu.spl.a2.sim.tools.GcdScrewDriver;
 import bgu.spl.a2.sim.tools.NextPrimeHammer;
 import bgu.spl.a2.sim.tools.RandomSumPliers;
@@ -167,10 +167,7 @@ public class Simulator {
             Gson gson = new Gson();
 
             BufferedReader br = new BufferedReader(new FileReader(jasonFileLocation));
-            //convert the json string back to object
             ParseData obj = gson.fromJson(br, ParseData.class);
-
-            //parseData
             parseData(obj);
 
             ConcurrentLinkedQueue<Product> simulationResult;

@@ -44,7 +44,7 @@ public class Processor implements Runnable {
 
         try {
             ConcurrentLinkedDeque<Task> tasks;
-            while (!Thread.interrupted()) {
+            while (true) {
                 tasks = pool.getQueue(id);
 
                 if (!tasks.isEmpty()) {
