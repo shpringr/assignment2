@@ -63,7 +63,7 @@ public abstract class Task<R> {
      */
     protected final void spawn(Task<?>... task) {
         for (Task subTask : task) {
-            currProcessor.addTaskToQueue(subTask);
+            currProcessor.addTaskToQueue(subTask,"spwan processor :" + currProcessor.getId() + "  " + subTask.check.toString());
         }
     }
 
@@ -79,15 +79,18 @@ public abstract class Task<R> {
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
         continueCallback = callback;
-        numberOfTaskToWaitFor = tasks.size();
+        synchronized (lockNumOfTask) {
+            numberOfTaskToWaitFor = tasks.size();
+        }
 
         for (Task task : tasks)
         {
             task.getResult().whenResolved(() -> {
                 synchronized (lockNumOfTask) {
                     if (numberOfTaskToWaitFor == 1) {
-                        currProcessor.addTaskToQueue(this);
-                    } else
+                        currProcessor.addTaskToQueue(this, "submit after subtasks processor :" + currProcessor.getId() + "  " + this.check.toString());
+                    }
+                    else
                         numberOfTaskToWaitFor--;
                 }
             });

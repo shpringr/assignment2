@@ -17,6 +17,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class WorkStealingThreadPool {
 
     private List<Processor> processors;
+
+    //TODO:BORRAR
+    public List<Thread> getThreads() {
+        return threads;
+    }
+
     private List<Thread> threads;
     private List<ConcurrentLinkedDeque<Task>> queues;
     private VersionMonitor vm;
@@ -67,10 +73,7 @@ public class WorkStealingThreadPool {
     public void submit(Task<?> task)
     {
         int randomProcessor = ThreadLocalRandom.current().nextInt(0,processors.size());
-        queues.get(randomProcessor).addFirst(task);
-        vm.inc();
-        //TODO:BORRAR
-        printProcessorStates("submit processor :" + randomProcessor + "  "+ task.check.toString());
+        processors.get(randomProcessor).addTaskToQueue(task, "submit processor :" + randomProcessor + "  "+ task.check.toString());
     }
 
     /**
@@ -114,21 +117,21 @@ public class WorkStealingThreadPool {
         synchronized (lockPrint) {
 
             System.out.println(msg);
-//            System.out.println("*******");
-//            for (int i = 0; i < processors.size(); i++) {
-//                if (threads.get(i).isAlive())
-//                    System.out.println("Processor " + processors.get(i).getId() +  "[" + threads.get(i).getState().toString()
-//                            + "] has " + queues.get(i).size() + " tasks");
-//                if (!queues.get(i).isEmpty())
-//                    for (Task task : queues.get(i)) {
-//                        System.out.println(task.check.toString());
-//                        //if (task.check instanceof int[])
-//                          //  System.out.println("    " + Arrays.toString((int[]) task.check));
-//                    }
-//            }
-//
-//            System.out.println("*******");
- //           System.out.println();
+            System.out.println("*******");
+            for (int i = 0; i < processors.size(); i++) {
+                if (threads.get(i).isAlive())
+                    System.out.println("Processor " + processors.get(i).getId() +  "[" + threads.get(i).getState().toString()
+                            + "] has " + queues.get(i).size() + " tasks");
+                if (!queues.get(i).isEmpty())
+                    for (Task task : queues.get(i)) {
+                        System.out.println(task.check.toString());
+                        //if (task.check instanceof int[])
+                          //  System.out.println("    " + Arrays.toString((int[]) task.check));
+                    }
+            }
+
+            System.out.println("*******");
+            System.out.println();
         }
    }
 }
