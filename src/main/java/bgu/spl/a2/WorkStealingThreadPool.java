@@ -17,18 +17,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class WorkStealingThreadPool {
 
     private List<Processor> processors;
-
-    //TODO:BORRAR
-    public List<Thread> getThreads() {
-        return threads;
-    }
-
     private List<Thread> threads;
     private List<ConcurrentLinkedDeque<Task>> queues;
     private VersionMonitor vm;
-    //TODO: get rude of all the prints and commented out code and shit like this.
-    //TODO: for muhamad - if u see that it means we forgot flash with ittt
-      private Object lockPrint = new Object();
 
     /**
      * creates a {@link WorkStealingThreadPool} which has nthreads
@@ -42,14 +33,15 @@ public class WorkStealingThreadPool {
      * @param nthreads the number of threads that should be started by this
      * thread pool
      */
-    public WorkStealingThreadPool(int nthreads) {
-
+    public WorkStealingThreadPool(int nthreads)
+    {
         processors = new ArrayList<>();
         queues= new ArrayList<>();
         threads = new ArrayList<>();
         vm = new VersionMonitor();
 
-        for (int i=0; i< nthreads; i++) {
+        for (int i=0; i< nthreads; i++)
+        {
             Processor currProcessor = new Processor(i, this);
             processors.add(i, currProcessor);
             queues.add(i, new ConcurrentLinkedDeque<>());
@@ -65,6 +57,7 @@ public class WorkStealingThreadPool {
         return queues.get(id);
     }
 
+    List<Processor> getProcessors() { return processors; }
     /**
      * submits a task to be executed by a processor belongs to this thread pool
      *
@@ -73,7 +66,7 @@ public class WorkStealingThreadPool {
     public void submit(Task<?> task)
     {
         int randomProcessor = ThreadLocalRandom.current().nextInt(0,processors.size());
-        processors.get(randomProcessor).addTaskToQueue(task, "submit processor :" + randomProcessor + "  "+ task.check.toString());
+        processors.get(randomProcessor).addTaskToQueue(task);
     }
 
     /**
@@ -106,32 +99,4 @@ public class WorkStealingThreadPool {
             thread.start();
         }
     }
-
-    List<Processor> getProcessors() {
-        return processors;
-    }
-
-
-    //TODO:BORRAR
-    void printProcessorStates(String msg) {
-        synchronized (lockPrint) {
-
-            System.out.println(msg);
-            System.out.println("*******");
-            for (int i = 0; i < processors.size(); i++) {
-                if (threads.get(i).isAlive())
-                    System.out.println("Processor " + processors.get(i).getId() +  "[" + threads.get(i).getState().toString()
-                            + "] has " + queues.get(i).size() + " tasks");
-                if (!queues.get(i).isEmpty())
-                    for (Task task : queues.get(i)) {
-                        System.out.println(task.check.toString());
-                        //if (task.check instanceof int[])
-                          //  System.out.println("    " + Arrays.toString((int[]) task.check));
-                    }
-            }
-
-            System.out.println("*******");
-            System.out.println();
-        }
-   }
 }

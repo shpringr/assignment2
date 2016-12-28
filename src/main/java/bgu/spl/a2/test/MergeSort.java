@@ -12,13 +12,12 @@ public class MergeSort extends Task<int[]> {
 
     public MergeSort(int[] array) {
         this.array = array;
-        //TODO:BORRAR
-        //check = array;
-    }
+        }
 
     @Override
     protected void start() {
-        if (array.length > 1) {
+        if (array.length > 1)
+        {
             int[] spwanedArrayFirst = Arrays.copyOfRange(array, 0, array.length / 2);
             int[] spwanedArraySecond = Arrays.copyOfRange(array, array.length / 2, array.length);
 
@@ -71,7 +70,7 @@ public class MergeSort extends Task<int[]> {
 
     public static void main(String[] args) throws InterruptedException {
         WorkStealingThreadPool pool = new WorkStealingThreadPool(4);
-        int n = 1000000; //you may check on different number of elements if you like
+        int n = 10; //you may check on different number of elements if you like
         int[] array = new Random().ints(n).toArray();
 
         MergeSort task = new MergeSort(array);

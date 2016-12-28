@@ -15,9 +15,6 @@ import java.util.Collection;
  */
 public abstract class Task<R> {
 
-    //TODO:BORRAR
-    public Object check = new Object();
-
     private Deferred<R> deferred = new Deferred<>();
     private Processor currProcessor;
     private boolean started = false;
@@ -63,7 +60,7 @@ public abstract class Task<R> {
      */
     protected final void spawn(Task<?>... task) {
         for (Task subTask : task) {
-            currProcessor.addTaskToQueue(subTask,"spwan processor :" + currProcessor.getId() + "  " + subTask.check.toString());
+            currProcessor.addTaskToQueue(subTask);
         }
     }
 
@@ -74,7 +71,7 @@ public abstract class Task<R> {
      * Implementors note: make sure that the callback is running only once when
      * all the given tasks completed.
      *
-     * @param tasks
+     * @param tasks tasks to wait for
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
@@ -86,7 +83,7 @@ public abstract class Task<R> {
             task.getResult().whenResolved(() -> {
                 synchronized (lockNumOfTask) {
                     if (numberOfTaskToWaitFor == 1) {
-                        currProcessor.addTaskToQueue(this, "submit after subtasks processor :" + currProcessor.getId() + "  " + this.check.toString());
+                        currProcessor.addTaskToQueue(this);
                     }
                     else
                         numberOfTaskToWaitFor--;

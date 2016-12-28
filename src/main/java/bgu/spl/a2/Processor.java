@@ -1,7 +1,5 @@
 package bgu.spl.a2;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -18,8 +16,6 @@ public class Processor implements Runnable {
 
     private final int id;
     private final WorkStealingThreadPool pool;
-    private final Object lockAwait = new Object();
-    private final Object lockInc = new Object();
 
     /**
      * constructor for this class
@@ -44,37 +40,30 @@ public class Processor implements Runnable {
 
     @Override
     public void run() {
-
         try {
             ConcurrentLinkedDeque<Task> tasks;
 
             while (true)
             {
-                int versionBefore = pool.getVm().getVersion();
+                int versionBeforeProcess = pool.getVm().getVersion();
                 tasks = pool.getQueue(id);
 
                 if (!tasks.isEmpty())
                 {
                     Task t = tasks.pollFirst();
+
                     if (t != null)
                         t.handle(this);
-                    //TODO:BORRAR
-                    pool.printProcessorStates("run after submit processor :" + id +
-                    " task "+ t.check.toString());
                 }
                 else
-                    {
-                        if (!tryStealTasks()) {
-                            pool.getVm().await(versionBefore);
-                        }
+                {
+                    if (!tryStealTasks()) {
+                        pool.getVm().await(versionBeforeProcess);
+                    }
                 }
-
             }
         }
-        catch (InterruptedException ignored){
-        }
-        //TODO:BORRAR
-        System.out.println("Processor " + id + " interrupted!!");
+        catch (InterruptedException ignored){}
     }
 
     private boolean tryStealTasks() throws InterruptedException {
@@ -86,40 +75,27 @@ public class Processor implements Runnable {
         {
             ConcurrentLinkedDeque<Task> victimQueue = pool.getQueue(nextToSteal);
 
-            if (victimQueue.size() > 1 ) {
+            if (victimQueue.size() > 1)
+            {
                 isFound = true;
 
-                for (int i = 0; i < victimQueue.size() / 2 && victimQueue.size() > 0; i++) {
+                for (int i = 0; i < victimQueue.size() / 2 && victimQueue.size() > 0; i++)
+                {
                     Task task = victimQueue.pollLast();
-
-                    if (task != null) {//TODO:BORRAR
-                        String msg = "Processor " + id + " stole from " + nextToSteal + " task ";
-                        if (task.check instanceof int[])
-                            msg += Arrays.toString((int[]) task.check);
-                        msg += task.check.toString();
-
-                        addTaskToQueue(task, msg);
-                    }
+                    if (task != null)
+                        addTaskToQueue(task);
                 }
             }
-             else {
+            else
                 nextToSteal = (nextToSteal + 1) % pool.getProcessors().size();
-            }
         }
 
         return isFound;
     }
 
-    void addTaskToQueue(Task task, String s)
+    void addTaskToQueue(Task task)
     {
         pool.getQueue(id).addFirst(task);
         pool.getVm().inc();
-        //TODO:BORRAR
-        pool.printProcessorStates(s);
-    }
-
-    //TODO:BORRAR
-    public int getId() {
-        return id;
     }
 }
