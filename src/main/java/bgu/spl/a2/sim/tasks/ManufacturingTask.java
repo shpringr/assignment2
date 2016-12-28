@@ -19,8 +19,6 @@ public class ManufacturingTask extends Task<Product> {
     public ManufacturingTask(Product product, Warehouse warehouse) {
         this.product = product;
         this.warehouse = warehouse;
-        //TODO:BORRAR
-        check = product.getName();
     }
 
     @Override
