@@ -139,7 +139,7 @@ public class Simulator {
     public static void main(String[] args) {
         try
         {
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 1000; i++) {
 
                 String jasonFileLocation = args[0];
                 Gson gson = new Gson();

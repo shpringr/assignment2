@@ -18,7 +18,7 @@ public abstract class Task<R> {
     //TODO:BORRAR
     public Object check = new Object();
 
-    private Deferred<R> deferred = new Deferred<R>();
+    private Deferred<R> deferred = new Deferred<>();
     private Processor currProcessor;
     private boolean started = false;
     private int numberOfTaskToWaitFor = 0;
@@ -79,9 +79,7 @@ public abstract class Task<R> {
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
         continueCallback = callback;
-        synchronized (lockNumOfTask) {
-            numberOfTaskToWaitFor = tasks.size();
-        }
+        numberOfTaskToWaitFor = tasks.size();
 
         for (Task task : tasks)
         {

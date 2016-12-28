@@ -47,8 +47,10 @@ public class Processor implements Runnable {
 
         try {
             ConcurrentLinkedDeque<Task> tasks;
+
             while (true)
             {
+                int versionBefore = pool.getVm().getVersion();
                 tasks = pool.getQueue(id);
 
                 if (!tasks.isEmpty())
@@ -62,17 +64,8 @@ public class Processor implements Runnable {
                 }
                 else
                     {
-                        int versionBefore = pool.getVm().getVersion();
                         if (!tryStealTasks()) {
-                            synchronized (lockAwait) {
-                                int versionAfter = pool.getVm().getVersion();
-                                if (versionAfter==versionBefore) {
-                                    pool.getVm().await(pool.getVm().getVersion());
-//                                    System.out.println("processor " + id +
-//                                            " sleeping after ");
-                                }
-                            }
-
+                            pool.getVm().await(versionBefore);
                         }
                 }
 
@@ -119,12 +112,10 @@ public class Processor implements Runnable {
 
     void addTaskToQueue(Task task, String s)
     {
-        synchronized (lockInc) {
-            pool.getQueue(id).addFirst(task);
-            pool.getVm().inc();
-            //TODO:BORRAR
-            pool.printProcessorStates(s);
-        }
+        pool.getQueue(id).addFirst(task);
+        pool.getVm().inc();
+        //TODO:BORRAR
+        pool.printProcessorStates(s);
     }
 
     //TODO:BORRAR
