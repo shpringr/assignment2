@@ -38,7 +38,6 @@ public class Simulator {
 
         try {
             workStealingThreadPool.start();
-
             for (Wave currWave : waves) {
                 List<Product> productsInWave = getWaveProducts(currWave);
                 CountDownLatch l = new CountDownLatch(productsInWave.size());
@@ -51,10 +50,8 @@ public class Simulator {
                     currTask.getResult().whenResolved(l::countDown);
                 }
                 l.await();
-
                 for (Product product : productsInWave)
                     manufacturedProducts.add(product);
-
             }
 
             workStealingThreadPool.shutdown();
@@ -104,43 +101,47 @@ public class Simulator {
         }
     }
 
-    private static void parseData(ParseData obj) {
+    private static void parseData(ParseData parseDataObj) {
 
         //create WorkStealingThreadPool
-        WorkStealingThreadPool workStealingThreadPoolTmp = new WorkStealingThreadPool(obj.getThreads());
+        WorkStealingThreadPool workStealingThreadPoolTmp = new WorkStealingThreadPool(parseDataObj.getThreads());
         Simulator.attachWorkStealingThreadPool(workStealingThreadPoolTmp);
 
         warehouse = new Warehouse();
         waves = new ArrayList<>();
         //add tool to Warehouse
-        for (int i = 0; i < obj.getTools().size(); i++) {
-            addTool(obj.getTools().get(i).getTool(), obj.getTools().get(i).getQty());
+        for (int i = 0; i < parseDataObj.getTools().size(); i++) {
+            addTool(parseDataObj.getTools().get(i).getTool(), parseDataObj.getTools().get(i).getQty());
         }
 
         //add Plan to Warehouse
-        ManufactoringPlan plan;
-        for (int i = 0; i < obj.getPlans().size(); i++) {
-            String product = obj.getPlans().get(i).getProduct();
-            String[] parts = obj.getPlans().get(i).getParts();
-            String[] tools = obj.getPlans().get(i).getTools();
-            plan = new ManufactoringPlan(product, parts, tools);
-            warehouse.addPlan(plan);
+        for (int i = 0; i < parseDataObj.getPlans().size(); i++) {
+            addPlan(parseDataObj, i);
         }
 
         //add Wave to Wave List
         Wave wave;
-        int size = obj.getWaves().size();
+        int size = parseDataObj.getWaves().size();
         for (int i = 0; i < size; i++) {
-            wave = new Wave(obj.getWaves().get(i));
+            wave = new Wave(parseDataObj.getWaves().get(i));
             waves.add(wave);
         }
     }
 
-    public static int main(String[] args) {
+    //add plan to warehouse
+    private static void addPlan(ParseData obj, int i) {
+        ManufactoringPlan plan;
+        String product = obj.getPlans().get(i).getProduct();
+        String[] parts = obj.getPlans().get(i).getParts();
+        String[] tools = obj.getPlans().get(i).getTools();
+        plan = new ManufactoringPlan(product, parts, tools);
+        warehouse.addPlan(plan);
+    }
+
+    public static void main(String[] args) {
         try
         {
             for (int i = 0; i < 1000; i++) {
-
                 String jasonFileLocation = args[0];
                 Gson gson = new Gson();
 
@@ -154,71 +155,10 @@ public class Simulator {
                 ObjectOutputStream oos = new ObjectOutputStream(fout);
                 oos.writeObject(simulationResult);
                 oos.close();
-
-                //TODO:BORRAR
-                deserializeObject();
-
-
+                br.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return 0 ;
     }
-
-    //TODO:BORRAR
-    private static void deserializeObject() {
-        //deserialize the quarks.ser file
-        try{
-            InputStream file = new FileInputStream("result.ser");
-            InputStream buffer = new BufferedInputStream(file);
-            ObjectInput input = new ObjectInputStream(buffer);
-
-            //deserialize the List
-            ConcurrentLinkedQueue<Product> recoveredQuarks = (ConcurrentLinkedQueue<Product>)input.readObject();
-            //display its data
-//            for (Iterator<Product> it = recoveredQuarks.iterator(); it.hasNext(); ) {
-//                Product quark = it.next();
-//                System.out.println(quark.toString());
-//            }
-            System.out.println(recoveredQuarks.size());
-
-        }
-        catch(ClassNotFoundException ex){
-        }
-        catch(IOException ex){
-        }
-    }
-
-
-
-    /*
-        //StringWriter res = new StringWriter();
-        // deserialize the list of Vehicules
-        try {
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("result.ser"));
-            ConcurrentLinkedQueue<Product> deserializedVehicles = (ConcurrentLinkedQueue<Product>) ois.readObject();
-            ois.close();
-
-            Iterator<Product> itr= deserializedVehicles.iterator();
-            res.write("ProductName: " + ((Product)itr).getName() + " Product Id = " + ((Product)itr).getFinalId() + "\n" + "PartsList {");
-
-            while(itr.hasNext()){
-                res.write("ProductName: " + itr.next().getName() + " Product Id = " + itr.next().getFinalId() + "\n" + "PartsList {" );
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace(); // handle this appropriately
-        }
-
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream("result.txt"), "utf-8"))) {
-            writer.write(String.valueOf(res));
-        }
-        catch (Exception ex){
-            ex.printStackTrace(); // handle this appropriately
-        }
-*/
-
 }

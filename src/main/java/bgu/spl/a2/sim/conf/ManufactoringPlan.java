@@ -4,6 +4,7 @@ package bgu.spl.a2.sim.conf;
  * a class that represents a manufacturing plan.
  **/
 public class ManufactoringPlan {
+
     private String product;
     private String[] parts;
     private String[] tools;

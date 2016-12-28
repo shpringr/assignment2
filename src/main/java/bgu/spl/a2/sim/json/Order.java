@@ -1,10 +1,7 @@
 package bgu.spl.a2.sim.json;
 
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.Map;
 
 public class Order {
 
@@ -41,22 +38,4 @@ public class Order {
     public void setStartId(Long startId) {
         this.startId = startId;
     }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "product='" + product + '\'' +
-                ", qty=" + qty +
-                ", startId=" + startId +
-                '}';
-    }
-
-    //
-//    public Map<String, Integer> getProductsAndQuantities() {
-//        return productsAndQuantities;
-//    }
-//
-//    public void setProductsAndQuantities(Map<String, Integer> productsAndQuantities) {
-//        this.productsAndQuantities = productsAndQuantities;
-//    }
 }

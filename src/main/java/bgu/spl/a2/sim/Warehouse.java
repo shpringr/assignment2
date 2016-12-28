@@ -11,11 +11,12 @@ import java.util.Map;
 
 /**
  * A class representing the warehouse in your simulation
- * <p>
+ *
  * Note for implementors: you may add methods and synchronize any of the
  * existing methods in this class *BUT* you must be able to explain why the
  * synchronization is needed. In addition, the methods you add to this class can
  * only be private!!!
+ *
  */
 public class Warehouse {
 
@@ -23,6 +24,7 @@ public class Warehouse {
     private List<ManufactoringPlan> plans;
     private final Object lock = new Object();
     private Map<String, List<Deferred<Tool>>> toolsToWaitingDeffereds;
+
     /**
      * Constructor
      */

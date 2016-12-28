@@ -1,6 +1,5 @@
 package bgu.spl.a2.sim.json;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -40,12 +39,4 @@ public class Plan {
         this.parts = parts;
     }
 
-    @Override
-    public String toString() {
-        return "Plan{" +
-                "product='" + product + '\'' +
-                ", tools=" + tools +
-                ", parts=" + parts +
-                '}';
-    }
 }

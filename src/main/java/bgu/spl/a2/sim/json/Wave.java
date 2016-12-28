@@ -1,7 +1,5 @@
 package bgu.spl.a2.sim.json;
 
-
-
 import java.util.List;
 
 public class Wave {
@@ -18,12 +16,5 @@ public class Wave {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
-    }
-
-    @Override
-    public String toString() {
-        return "Wave{" +
-                "orders=" + orders +
-                '}';
     }
 }

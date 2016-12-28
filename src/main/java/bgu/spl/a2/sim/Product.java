@@ -48,6 +48,11 @@ public class Product implements Serializable {
         return finalID;
     }
 
+    /**
+     *
+     * @param finalID
+     * set FinalID
+     */
     public void setFinalID(long finalID) {
         this.finalID = finalID;
     }
@@ -66,16 +71,6 @@ public class Product implements Serializable {
      */
     public void addPart(Product p) {
         parts.add(p);
-    }
-
-    @Override
-    //TODO:BORRAR
-    public String toString() {
-        return "Product{\n" +
-                ", finalID=" + finalID +
-                "\n, name='" + name + '\'' +
-                "\n, parts=" + parts +
-                '}';
     }
 
 }

@@ -1,9 +1,9 @@
 
 package bgu.spl.a2.sim.json;
 
-        import java.util.List;
-        import com.google.gson.annotations.Expose;
-        import com.google.gson.annotations.SerializedName;
+import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 
 public class ParseData {
@@ -51,15 +51,5 @@ public class ParseData {
 
     public void setWaves(List<List<Order>> waves) {
         this.waves = waves;
-    }
-
-    @Override
-    public String toString() {
-        return "ParseData{" +
-                "threads=" + threads +
-                ", tools=" + tools +
-                ", plans=" + plans +
-                ", waves=" + waves +
-                '}';
     }
 }
