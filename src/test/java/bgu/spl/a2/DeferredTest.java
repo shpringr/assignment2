@@ -94,12 +94,14 @@ public class DeferredTest extends Deferred {
     public void testResolveStrAfter()
     {
             deferredStr.resolve(valueStr);
+        deferredStr.resolve(valueStr);
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void testResolveIntAfter()
     {
+        deferredInt.resolve(valueInt);
         deferredInt.resolve(valueInt);
     }
 
