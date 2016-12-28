@@ -1,5 +1,6 @@
 package bgu.spl.a2;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -43,15 +44,19 @@ public class Processor implements Runnable {
 
         try {
             ConcurrentLinkedDeque<Task> tasks;
-            while (true) {
+            while (true)
+            {
                 tasks = pool.getQueue(id);
 
-                if (!tasks.isEmpty()) {
+                if (!tasks.isEmpty())
+                {
                     Task t = tasks.pollFirst();
                     t.handle(this);
                     //TODO:BORRAR
                     pool.printProcessorStates("run after submit processor :" + id);
-                } else {
+                }
+                else
+                    {
                     if (!tryStealTasks())
                         pool.getVm().await(pool.getVm().getVersion());
                 }
@@ -64,7 +69,7 @@ public class Processor implements Runnable {
         System.out.println("Processor " + id + " interrupted!!");
     }
 
-    private boolean tryStealTasks() {
+    private boolean tryStealTasks() throws InterruptedException {
 
         int nextToSteal = (id + 1) % pool.getProcessors().size();
         boolean isFound = false;
@@ -79,12 +84,14 @@ public class Processor implements Runnable {
                 for (int i = 0; i < victimQueue.size() / 2 && victimQueue.size() > 0; i++)
                 {
                     Task task = victimQueue.pollLast();
-                    pool.getQueue(id).addFirst(task);
+
+                    if (task!=null)
+                       addTaskToQueue(task);
 
                     //TODO:BORRAR
                     String msg = "Processor " + id + " stole from " + nextToSteal + " task " ;
-                    //if (task.check instanceof int[])
-                    //msg += Arrays.toString((int[]) task.check);
+                    if (task.check instanceof int[])
+                    msg += Arrays.toString((int[]) task.check);
                         msg+= task.check.toString();
                     pool.printProcessorStates(msg);
                 }

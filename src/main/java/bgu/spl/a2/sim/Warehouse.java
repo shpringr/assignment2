@@ -92,8 +92,10 @@ public class Warehouse {
 
     private void resolveWaiting(Tool tool)
     {
-        if (toolsToWaitingDeffereds.containsKey(tool.getType()))
-            toolsToWaitingDeffereds.get(tool.getType()).remove(0).resolve(tool);
+        synchronized (lock) {
+            if (toolsToWaitingDeffereds.containsKey(tool.getType()))
+                toolsToWaitingDeffereds.get(tool.getType()).remove(0).resolve(tool);
+        }
     }
 
     private void addToolToInventory(Tool tool) {

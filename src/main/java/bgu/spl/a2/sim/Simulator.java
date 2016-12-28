@@ -14,7 +14,6 @@ import com.google.gson.Gson;
 import java.io.*;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -26,8 +25,8 @@ import java.util.concurrent.CountDownLatch;
 public class Simulator {
 
     private static WorkStealingThreadPool workStealingThreadPool;
-    private static List<Wave> waves = new ArrayList<>();
-    private static Warehouse warehouse = new Warehouse();
+    private static List<Wave> waves;
+    private static Warehouse warehouse;
 
     /**
      * Begin the simulation
@@ -37,36 +36,29 @@ public class Simulator {
 
         ConcurrentLinkedQueue<Product> manufacturedProducts = new ConcurrentLinkedQueue<>();
 
-        workStealingThreadPool.start();
+        try {
+            workStealingThreadPool.start();
 
-        for (Wave currWave : waves) {
+            for (Wave currWave : waves) {
+                List<Product> productsInWave = getWaveProducts(currWave);
+                CountDownLatch l = new CountDownLatch(productsInWave.size());
 
-            List<Product> productsInWave = getWaveProducts(currWave);
-            CountDownLatch l = new CountDownLatch(productsInWave.size());
+                for (Product currProduct : productsInWave) {
+                    ManufacturingTask currTask = new ManufacturingTask(currProduct, warehouse);
 
-            for (Product currProduct : productsInWave) 
-            {
-                ManufacturingTask currTask = new ManufacturingTask(currProduct, warehouse);
-                
-                Simulator.workStealingThreadPool.submit(currTask);
+                    Simulator.workStealingThreadPool.submit(currTask);
 
-                currTask.getResult().whenResolved(l::countDown);
-            }
-            try 
-            {
+                    currTask.getResult().whenResolved(l::countDown);
+                }
                 l.await();
-                
+
                 for (Product product : productsInWave)
                     manufacturedProducts.add(product);
+
             }
-            catch (InterruptedException e) 
-            {
-                e.printStackTrace();
-            }
-        }
-        try
-        {
+
             workStealingThreadPool.shutdown();
+
         }
         catch (InterruptedException e)
         {
@@ -118,6 +110,8 @@ public class Simulator {
         WorkStealingThreadPool workStealingThreadPoolTmp = new WorkStealingThreadPool(obj.getThreads());
         Simulator.attachWorkStealingThreadPool(workStealingThreadPoolTmp);
 
+        warehouse = new Warehouse();
+        waves = new ArrayList<>();
         //add tool to Warehouse
         for (int i = 0; i < obj.getTools().size(); i++) {
             addTool(obj.getTools().get(i).getTool(), obj.getTools().get(i).getQty());
@@ -145,24 +139,26 @@ public class Simulator {
     public static void main(String[] args) {
         try
         {
-            String jasonFileLocation = args[0];
-            Gson gson = new Gson();
+            for (int i = 0; i < 100; i++) {
 
-            BufferedReader br = new BufferedReader(new FileReader(jasonFileLocation));
-            ParseData obj = gson.fromJson(br, ParseData.class);
-            parseData(obj);
+                String jasonFileLocation = args[0];
+                Gson gson = new Gson();
 
-            ConcurrentLinkedQueue<Product> simulationResult;
-            simulationResult = Simulator.start();
-            FileOutputStream fout = new FileOutputStream("result.ser");
-            ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(simulationResult);
-            oos.close();
+                BufferedReader br = new BufferedReader(new FileReader(jasonFileLocation));
+                ParseData obj = gson.fromJson(br, ParseData.class);
+                parseData(obj);
 
-            //TODO:BORRAR
-            deserializeObject();
+                ConcurrentLinkedQueue<Product> simulationResult;
+                simulationResult = Simulator.start();
+                FileOutputStream fout = new FileOutputStream("result.ser");
+                ObjectOutputStream oos = new ObjectOutputStream(fout);
+                oos.writeObject(simulationResult);
+                oos.close();
 
+                //TODO:BORRAR
+                deserializeObject();
 
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -179,10 +175,10 @@ public class Simulator {
             //deserialize the List
             ConcurrentLinkedQueue<Product> recoveredQuarks = (ConcurrentLinkedQueue<Product>)input.readObject();
             //display its data
-            for (Iterator<Product> it = recoveredQuarks.iterator(); it.hasNext(); ) {
-                Product quark = it.next();
-                System.out.println(quark.toString());
-            }
+//            for (Iterator<Product> it = recoveredQuarks.iterator(); it.hasNext(); ) {
+//                Product quark = it.next();
+//                System.out.println(quark.toString());
+//            }
             System.out.println(recoveredQuarks.size());
 
         }

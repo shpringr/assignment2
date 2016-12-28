@@ -113,7 +113,7 @@ public class WorkStealingThreadPool {
     void printProcessorStates(String msg) {
         synchronized (lockPrint) {
 
- //           System.out.println(msg);
+            System.out.println(msg);
 //            System.out.println("*******");
 //            for (int i = 0; i < processors.size(); i++) {
 //                if (threads.get(i).isAlive())
