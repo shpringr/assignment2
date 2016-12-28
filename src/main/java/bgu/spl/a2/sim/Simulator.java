@@ -136,7 +136,7 @@ public class Simulator {
         }
     }
 
-    public static void main(String[] args) {
+    public static int main(String[] args) {
         try
         {
             for (int i = 0; i < 1000; i++) {
@@ -158,10 +158,13 @@ public class Simulator {
                 //TODO:BORRAR
                 deserializeObject();
 
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return 0 ;
     }
 
     //TODO:BORRAR
