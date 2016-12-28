@@ -67,8 +67,6 @@ public class Processor implements Runnable {
         }
         catch (InterruptedException ignored){
         }
-        //TODO:BORRAR
-        System.out.println("Processor " + id + " interrupted!!");
     }
 
     private boolean tryStealTasks() throws InterruptedException {
@@ -106,10 +104,5 @@ public class Processor implements Runnable {
             pool.getQueue(id).addFirst(task);
             pool.getVm().inc();
         }
-    }
-
-    //TODO:BORRAR
-    public int getId() {
-        return id;
     }
 }

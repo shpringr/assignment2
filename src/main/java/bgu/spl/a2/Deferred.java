@@ -48,7 +48,7 @@ public class Deferred<T> {
      * @return true if this object has been resolved - i.e., if the method
      * {@link #resolve(java.lang.Object)} has been called on this object before.
      */
-    public synchronized boolean isResolved() {
+    public boolean isResolved() {
         return isResolve;
     }
 

@@ -16,13 +16,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class Task<R> {
 
-    //TODO:BORRAR
-    public Object check = new Object();
-
     private Deferred<R> deferred = new Deferred<>();
     private Processor currProcessor;
     private boolean started = false;
-    private AtomicInteger numberOfTaskToWaitFor = new AtomicInteger(0);
+    private int numberOfTaskToWaitFor = 0;
     private final Object lockNumOfTask = new Object();
     private Runnable continueCallback;
 
@@ -80,17 +77,19 @@ public abstract class Task<R> {
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
         continueCallback = callback;
-        numberOfTaskToWaitFor = new AtomicInteger(tasks.size());
+        numberOfTaskToWaitFor = tasks.size();
 
         for (Task task : tasks)
         {
             task.getResult().whenResolved(() -> {
-                  //  System.out.println("subtask " + task.check + " runs task  " + this.check + " number of subtasks ");
-                    if (numberOfTaskToWaitFor.get() == 1) {
+                    synchronized (lockNumOfTask)
+                    {
+                    if (numberOfTaskToWaitFor == 1) {
                         currProcessor.addTaskToQueue(this);
                     }
                     else
-                        numberOfTaskToWaitFor.decrementAndGet();
+                        numberOfTaskToWaitFor--;
+                    }
             });
         }
     }

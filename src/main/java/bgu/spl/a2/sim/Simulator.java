@@ -156,13 +156,9 @@ public class Simulator {
                 ObjectOutputStream oos = new ObjectOutputStream(fout);
                 oos.writeObject(simulationResult);
                 oos.close();
-             //   br.close();
+                br.close();
+                System.out.println(i);
 
-                for (Iterator<Product> it = simulationResult.iterator(); it.hasNext(); ) {
-                    Product p = it.next();
-                    System.out.println(i);
-                    System.out.println(p.getName());
-                }
             }
         } catch (IOException e) {
             e.printStackTrace();
