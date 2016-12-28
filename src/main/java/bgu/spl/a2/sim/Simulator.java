@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import java.io.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -141,7 +142,7 @@ public class Simulator {
     public static void main(String[] args) {
         try
         {
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 500; i++) {
                 String jasonFileLocation = args[0];
                 Gson gson = new Gson();
 
@@ -155,7 +156,13 @@ public class Simulator {
                 ObjectOutputStream oos = new ObjectOutputStream(fout);
                 oos.writeObject(simulationResult);
                 oos.close();
-                br.close();
+             //   br.close();
+
+                for (Iterator<Product> it = simulationResult.iterator(); it.hasNext(); ) {
+                    Product p = it.next();
+                    System.out.println(i);
+                    System.out.println(p.getName());
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

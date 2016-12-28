@@ -1,6 +1,7 @@
 package bgu.spl.a2;
 
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * an abstract class that represents a task that may be executed using the
@@ -15,10 +16,13 @@ import java.util.Collection;
  */
 public abstract class Task<R> {
 
+    //TODO:BORRAR
+    public Object check = new Object();
+
     private Deferred<R> deferred = new Deferred<>();
     private Processor currProcessor;
     private boolean started = false;
-    private int numberOfTaskToWaitFor = 0;
+    private AtomicInteger numberOfTaskToWaitFor = new AtomicInteger(0);
     private final Object lockNumOfTask = new Object();
     private Runnable continueCallback;
 
@@ -71,23 +75,22 @@ public abstract class Task<R> {
      * Implementors note: make sure that the callback is running only once when
      * all the given tasks completed.
      *
-     * @param tasks tasks to wait for
+     * @param tasks
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
         continueCallback = callback;
-        numberOfTaskToWaitFor = tasks.size();
+        numberOfTaskToWaitFor = new AtomicInteger(tasks.size());
 
         for (Task task : tasks)
         {
             task.getResult().whenResolved(() -> {
-                synchronized (lockNumOfTask) {
-                    if (numberOfTaskToWaitFor == 1) {
+                  //  System.out.println("subtask " + task.check + " runs task  " + this.check + " number of subtasks ");
+                    if (numberOfTaskToWaitFor.get() == 1) {
                         currProcessor.addTaskToQueue(this);
                     }
                     else
-                        numberOfTaskToWaitFor--;
-                }
+                        numberOfTaskToWaitFor.decrementAndGet();
             });
         }
     }

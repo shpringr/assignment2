@@ -1,7 +1,6 @@
 package bgu.spl.a2;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * this class represents a deferred result i.e., an object that eventually will
@@ -20,11 +19,11 @@ import java.util.List;
 public class Deferred<T> {
 
     private T value = null;
-    private List<Runnable> callbacksList = new ArrayList<>();
+    private ConcurrentLinkedDeque<Runnable> callbacks = new ConcurrentLinkedDeque<>();
     private boolean isResolve= false;
 
-    List<Runnable> getCallbacks() {
-        return callbacksList;
+    ConcurrentLinkedDeque<Runnable> getCallbacks() {
+        return callbacks;
     }
 
     /**
@@ -49,7 +48,7 @@ public class Deferred<T> {
      * @return true if this object has been resolved - i.e., if the method
      * {@link #resolve(java.lang.Object)} has been called on this object before.
      */
-    public boolean isResolved() {
+    public synchronized boolean isResolved() {
         return isResolve;
     }
 
@@ -65,14 +64,14 @@ public class Deferred<T> {
      * @throws IllegalStateException in the case where this object is already
      * resolved
      */
-    public void resolve(T value) {
+    public synchronized void resolve(T value) {
         if (isResolve) {
             throw new IllegalStateException("this object is already resolved");
         }
         else{
-            this.value = value;
             isResolve = true;
-            for (Runnable callback : callbacksList){
+            this.value = value;
+            for (Runnable callback : callbacks){
                 callback.run();
             }
         }
@@ -91,14 +90,12 @@ public class Deferred<T> {
      * @param callback the callback to be called when the deferred object is
      * resolved
      */
-    public void whenResolved(Runnable callback) {
+    public synchronized void whenResolved(Runnable callback) {
         if (isResolve){
             callback.run();
         }
         else {
-            if (!callbacksList.contains(callback)) {
-                callbacksList.add(callback);
-            }
+            callbacks.add(callback);
         }
     }
 }

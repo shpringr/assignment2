@@ -11,7 +11,9 @@ public class MergeSort extends Task<int[]> {
     private final int[] array;
 
     public MergeSort(int[] array) {
+
         this.array = array;
+        check = Arrays.toString(array);
         }
 
     @Override
@@ -69,22 +71,24 @@ public class MergeSort extends Task<int[]> {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        WorkStealingThreadPool pool = new WorkStealingThreadPool(4);
-        int n = 10; //you may check on different number of elements if you like
-        int[] array = new Random().ints(n).toArray();
+        for (int i = 0; i < 500; i++) {
+            WorkStealingThreadPool pool = new WorkStealingThreadPool(10);
+            int n = 10; //you may check on different number of elements if you like
+            int[] array = new Random().ints(n).toArray();
 
-        MergeSort task = new MergeSort(array);
+            MergeSort task = new MergeSort(array);
 
-        CountDownLatch l = new CountDownLatch(1);
-        pool.start();
-        pool.submit(task);
-        task.getResult().whenResolved(() -> {
-            //warning - a large print!! - you can remove this line if you wish
-            System.out.println(Arrays.toString(task.getResult().get()));
-            l.countDown();
-        });
+            CountDownLatch l = new CountDownLatch(1);
+            pool.start();
+            pool.submit(task);
+            task.getResult().whenResolved(() -> {
+                //warning - a large print!! - you can remove this line if you wish
+                System.out.println(Arrays.toString(task.getResult().get()));
+                l.countDown();
+            });
 
-        l.await();
-        pool.shutdown();
+            l.await();
+            pool.shutdown();
+        }
     }
 }
