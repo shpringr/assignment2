@@ -141,26 +141,23 @@ public class Simulator {
 
     public static void main(String[] args) {
         try
-        {
-            for (int i = 0; i < 500; i++) {
-                String jasonFileLocation = args[0];
-                Gson gson = new Gson();
+        {   
+		String jasonFileLocation = args[0];
+		Gson gson = new Gson();
 
-                BufferedReader br = new BufferedReader(new FileReader(jasonFileLocation));
-                ParseData obj = gson.fromJson(br, ParseData.class);
-                parseData(obj);
+		BufferedReader br = new BufferedReader(new FileReader(jasonFileLocation));
+		ParseData obj = gson.fromJson(br, ParseData.class);
+		parseData(obj);
 
-                ConcurrentLinkedQueue<Product> simulationResult;
-                simulationResult = Simulator.start();
-                FileOutputStream fout = new FileOutputStream("result.ser");
-                ObjectOutputStream oos = new ObjectOutputStream(fout);
-                oos.writeObject(simulationResult);
-                oos.close();
-                br.close();
-                System.out.println(i);
-
-            }
-        } catch (IOException e) {
+		ConcurrentLinkedQueue<Product> simulationResult;
+		simulationResult = Simulator.start();
+		FileOutputStream fout = new FileOutputStream("result.ser");
+		ObjectOutputStream oos = new ObjectOutputStream(fout);
+		oos.writeObject(simulationResult);
+		oos.close();
+		br.close();
+        }
+	 catch (IOException e) {
             e.printStackTrace();
         }
     }
