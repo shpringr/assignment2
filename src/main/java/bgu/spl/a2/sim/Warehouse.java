@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A class representing the warehouse in your simulation
@@ -29,7 +30,7 @@ public class Warehouse {
      * Constructor
      */
     public Warehouse() {
-        toolsAndQuantities = new HashMap<>();
+        toolsAndQuantities = new ConcurrentHashMap<>();
         plans = new ArrayList<>();
         toolsToWaitingDeffereds = new HashMap<>();
     }
@@ -65,8 +66,7 @@ public class Warehouse {
     private void putDeferredInMap(String type, Deferred<Tool> toolDeferred) {
         if (toolsToWaitingDeffereds.containsKey(type))
             toolsToWaitingDeffereds.get(type).add(toolDeferred);
-        else
-            {
+        else {
             List<Deferred<Tool>> deferredTools = new ArrayList<>();
             deferredTools.add(toolDeferred);
             toolsToWaitingDeffereds.put(type, deferredTools);
@@ -88,15 +88,20 @@ public class Warehouse {
      */
     public void releaseTool(Tool tool)
     {
-        addToolToInventory(tool);
-        resolveWaiting(tool);
+        synchronized (lock) {
+            addToolToInventory(tool);
+            resolveWaiting(tool);
+        }
     }
 
-    private void resolveWaiting(Tool tool)
-    {
-        synchronized (lock) {
-            if (toolsToWaitingDeffereds.containsKey(tool.getType()))
-                toolsToWaitingDeffereds.get(tool.getType()).remove(0).resolve(tool);
+    private void resolveWaiting(Tool tool) {
+        if (toolsToWaitingDeffereds.containsKey(tool.getType())) {
+            Deferred<Tool> deferredToResolve = toolsToWaitingDeffereds.get(tool.getType()).remove(0);
+
+            if (toolsToWaitingDeffereds.get(tool.getType()).isEmpty())
+                toolsToWaitingDeffereds.remove(tool.getType());
+
+            deferredToResolve.resolve(tool);
         }
     }
 
